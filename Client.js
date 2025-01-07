@@ -26,7 +26,7 @@ export class Client {
         });
     }
 
-    // TODO: Test call
+    // TODO: Test call (How to make request?)
     async post(path, body){
         await axios.post(`${this.url}/${path}`, body, { 'headers': this.headers }).then(response => {
             console.log(`Post request received a response...`)
@@ -36,7 +36,6 @@ export class Client {
         });
     }
 
-    // TODO: Test call
     async put(path, body){
         await axios.put(`${this.url}/${path}`, body, { 'headers': this.headers }).then(response => {
             console.log(`Put request received a response...`)
@@ -46,7 +45,7 @@ export class Client {
         });
     }
 
-    // TODO: Test call
+    // TODO: Test call (permissions issue)
     async delete(path){
         await axios.delete(`${this.url}/${path}`, { 'headers': this.headers }).then(response => {
             console.log(`Delete request received a response...`)
