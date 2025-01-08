@@ -20,13 +20,12 @@ export class Client {
     async get(path) {
         await axios.get(`${this.url}/${path}`, { 'headers': this.headers }).then(response => {
             console.log(`Get request received a response...`)
-            console.log(response.data);
+            console.log(response);
         }).catch(error => {
             console.error('Error fetching data', error);
         });
     }
 
-    // TODO: Test call (How to make request?)
     async post(path, body){
         await axios.post(`${this.url}/${path}`, body, { 'headers': this.headers }).then(response => {
             console.log(`Post request received a response...`)
@@ -45,7 +44,6 @@ export class Client {
         });
     }
 
-    // TODO: Test call (permissions issue)
     async delete(path){
         await axios.delete(`${this.url}/${path}`, { 'headers': this.headers }).then(response => {
             console.log(`Delete request received a response...`)
