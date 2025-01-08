@@ -12,8 +12,15 @@
       "extensions": [
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode"
-      ]
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": { "zsh": { "path": "/usr/bin/zsh" } }
+      },
+      "remote.extensionKind": {
+        "GitHub.copilot": ["ui"]
+      }
     }
   },
-  "runArgs": ["--env-file","devcontainer.env"]
+  "runArgs": ["--env-file",".devcontainer/devcontainer.env"]
 }
