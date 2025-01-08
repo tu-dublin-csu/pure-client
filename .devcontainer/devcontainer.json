@@ -1,9 +1,9 @@
 {
   "name": "pure-client",
-  "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node:0-18",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:dev-22",
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
-      "version": "18"
+      "version": "22"
     }
   },
   "postCreateCommand": "npm install",
