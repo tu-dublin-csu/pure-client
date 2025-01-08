@@ -1,0 +1,26 @@
+{
+  "name": "pure-client",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:dev-22",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
+    }
+  },
+  "postCreateCommand": "npm install",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": { "zsh": { "path": "/usr/bin/zsh" } }
+      },
+      "remote.extensionKind": {
+        "GitHub.copilot": ["ui"]
+      }
+    }
+  },
+  "runArgs": ["--env-file",".devcontainer/devcontainer.env"]
+}

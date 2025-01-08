@@ -79,6 +79,9 @@ web_modules/
 .env.production.local
 .env.local
 
+# Environment variables wanted in DevContainers
+/.devcontainer/devcontainer.env
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache
@@ -128,3 +131,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# JetBrains stuff
+.idea/
+
+# Mac stuff
+.DS_Store
