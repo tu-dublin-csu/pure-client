@@ -4,7 +4,31 @@ console.log(`Pure Client Starting...`);
 
 const client = new Client();
 
-// const path = 'users/';
+const path = 'users/';
+
+const uuids = [
+    'ff789c6c-a890-4906-bae9-661adcc2efea',
+    'b1f15599-433e-48fd-8216-72e3e62ddd41',
+    'FOO'
+];
+
+(async () => {
+    for (const uuid of uuids) {
+        try {
+            const res = await client.get(`${path}${uuid}`);
+            if (res.status === 200) {
+                console.log(`User ${uuid} found:`);
+                console.log(res.data);
+            } else {
+                console.log(`User ${uuid} not found`);
+            }
+        } catch (error) {
+            console.error(`Error during get request to ${path}${uuid}:`);
+        }
+    }
+})();
+
+
 
 // test get request
 // const res = await client.get(path);

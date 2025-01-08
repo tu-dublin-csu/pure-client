@@ -17,48 +17,39 @@ export class Client {
         };
     }
 
+    async _request(method, path, data = null) {
+        try {
+            console.log(`Requesting ${method.toUpperCase()} ${this.url}${path}`);
+            const response = await axios({
+                method: method,
+                url: `${this.url}/${path}`,
+                headers: this.headers,
+                data: data
+            });
+            return response;
+        } catch (error) {
+            if (error.response && error.response.status === 404) {
+                console.error(error.response.data);
+                return null;
+            } else {
+                throw error;
+            }
+        }
+    }
+
     async get(path) {
-        try {
-            const response = await axios.get(`${this.url}/${path}`, { 'headers': this.headers });
-            console.log(`Get request received a response...`);
-            return response;
-        } catch(error) {
-            console.error('Error fetching data', error);
-        }
-        return;
+        return this._request('get', path);
     }
 
-    async post(path, body){
-        try {
-            const response = await axios.post(`${this.url}/${path}`, body, { 'headers': this.headers });
-            console.log(`Post request received a response...`)
-            return response;
-        } catch(error) {
-            console.error('Error fetching data', error);
-        }
-        return;
+    async post(path, data) {
+        return this._request('post', path, data);
     }
 
-    async put(path, body){
-        try {
-            const response = await axios.put(`${this.url}${path}`, body, { 'headers': this.headers });
-            console.log(`Put request received a response...`)
-            return response;
-        } catch(error) {
-            console.error('Error fetching data', error);
-        }
-        return;
+    async put(path, data) {
+        return this._request('put', path, data);
     }
 
-    async delete(path){
-        try {
-            const response = await axios.delete(`${this.url}${path}`, { 'headers': this.headers });
-            console.log(`Delete request received a response...`);
-            return response;
-        } catch(error) {
-            console.error('Error fetching data', error);
-        }
-        return;
+    async delete(path) {
+        return this._request('delete', path);
     }
-
 }
