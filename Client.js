@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import axios from 'axios';
+import { STATUS_CODES } from './consts.js';
 
 export class Client {
 
@@ -23,7 +24,7 @@ export class Client {
             console.log(`Get request received a response...`);
             return response;
         } catch(error) {
-            console.error('Error fetching data', error);
+            this.handleError(error)
         }
         return;
     }
@@ -34,7 +35,7 @@ export class Client {
             console.log(`Post request received a response...`)
             return response;
         } catch(error) {
-            console.error('Error fetching data', error);
+            this.handleError(error)
         }
         return;
     }
@@ -45,7 +46,7 @@ export class Client {
             console.log(`Put request received a response...`)
             return response;
         } catch(error) {
-            console.error('Error fetching data', error);
+            this.handleError(error)
         }
         return;
     }
@@ -56,9 +57,38 @@ export class Client {
             console.log(`Delete request received a response...`);
             return response;
         } catch(error) {
-            console.error('Error fetching data', error);
+            this.handleError(error)
         }
         return;
+    }
+
+    /**
+     * Generic function to handle errors
+     * @param  error 
+     * @returns null 
+     */
+    handleError(error) {
+        
+        console.error('Error fetching data.');
+
+        if (!error.response) {
+            console.error(`Error: `, error.toJSON());
+            return null;
+        }
+
+        if(!error.response.status || !error.response.data) {
+            console.error(`Error Response: `, error.response);
+            return null;
+        }
+
+        if(STATUS_CODES[error.response.status]){
+            console.error(console.error(`Error Status Code, ${error.response.status} - ${STATUS_CODES[error.response.status]}:`, error.response.data));
+        } else {
+            console.error('Error Response Data:', error.response.data);
+        }
+
+        return null;
+
     }
 
 }
