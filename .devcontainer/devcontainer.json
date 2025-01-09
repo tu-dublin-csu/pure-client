@@ -22,5 +22,10 @@
       }
     }
   },
-  "runArgs": ["--env-file",".devcontainer/devcontainer.env"]
+  "runArgs": ["--env-file",".devcontainer/devcontainer.env"],
+  // Before (re)building the container, create the following directory and file inside your local home directory 
+  // - this will persist ZSH command history over sessions
+  // mkdir .vscode-zsh-hists
+  // touch .vscode-zsh-hists/pure_client.zsh_history
+  "mounts": ["source=${env:HOME}${env:USERPROFILE}/.vscode-zsh-hists/pure_client.zsh_history,target=/home/node/.zsh_history,type=bind"]
 }
