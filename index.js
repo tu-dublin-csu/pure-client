@@ -1,15 +1,19 @@
-import { Client } from './Client.js';
+import { PeopleXdClient } from './Client.js';
+import 'dotenv/config'
 
 console.log(`Pure Client Starting...`);
 
-const client = new Client();
+const client = new PeopleXdClient(process.env.PURE_URL, process.env.PURE_API_KEY);
 
-// const path = 'users/';
+const path = 'users/foo';
 
-// test get request
-// const res = await client.get(path);
-// console.log(`as variable: `);
-// console.log(res);
+//test get request
+try {
+    const res = await client.get(path);
+    console.log(res.data);
+} catch (error) {
+    console.log(error);
+}
 
 // test post request
 // const path = 'activities/disciplines/abc/search';

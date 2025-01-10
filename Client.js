@@ -1,14 +1,12 @@
-import 'dotenv/config'
 import axios from 'axios';
-import { STATUS_CODES } from './consts.js';
 
-export class Client {
+export class PeopleXdClient {
 
     url;
     apiKey;
     headers;
 
-    constructor(url = process.env.PURE_URL, apiKey = process.env.PURE_API_KEY) {
+    constructor(url, apiKey) {
         this.url = url;
         this.apiKey = apiKey;
         this.headers = { 
@@ -64,7 +62,7 @@ export class Client {
 
     /**
      * Generic function to handle errors
-     * @param  error 
+     * @param  {object} error 
      * @returns null 
      */
     handleError(error) {
@@ -72,23 +70,18 @@ export class Client {
         console.error('Error fetching data.');
 
         if (!error.response) {
-            console.error(`Error: `, error.toJSON());
-            return null;
+            //console.error(`Error: `, error.toJSON());
+            throw error;
         }
 
-        if(!error.response.status || !error.response.data) {
-            console.error(`Error Response: `, error.response);
-            return null;
+        if(error.response.data){
+            //console.error(`Error Response Status: ${error.response.status} - ${STATUS_CODES[error.response.status]}`);
+            throw error.response.data;
         }
-
-        if(STATUS_CODES[error.response.status]){
-            console.error(console.error(`Error Status Code, ${error.response.status} - ${STATUS_CODES[error.response.status]}:`, error.response.data));
-        } else {
-            console.error('Error Response Data:', error.response.data);
+        
+        if(error.response.status){
+            //console.error('Error Response Data:', error.response.data);
+            throw error.status;
         }
-
-        return null;
-
     }
-
 }
