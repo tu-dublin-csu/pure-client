@@ -1,4 +1,4 @@
-import { PeopleXdClient } from './Client.js';
+import { PeopleXdClient } from './peoplexd-client.js';
 import 'dotenv/config'
 
 console.log(`Pure Client Starting...`);

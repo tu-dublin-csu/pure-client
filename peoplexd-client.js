@@ -17,9 +17,10 @@ export class PeopleXdClient {
     }
 
     async get(path) {
+        console.log(`Attempting GET request.`);
         try {
-            const response = await axios.get(`${this.url}/${path}`, { 'headers': this.headers });
-            console.log(`Get request received a response...`);
+            const response = await axios.get(`${this.url}${path}`, { 'headers': this.headers });
+            console.log(`GET request received a response.`);
             return response;
         } catch(error) {
             this.handleError(error)
@@ -28,9 +29,10 @@ export class PeopleXdClient {
     }
 
     async post(path, body){
+        console.log(`Attempting POST request.`);
         try {
-            const response = await axios.post(`${this.url}/${path}`, body, { 'headers': this.headers });
-            console.log(`Post request received a response...`)
+            const response = await axios.post(`${this.url}${path}`, body, { 'headers': this.headers });
+            console.log(`POST request received a response.`)
             return response;
         } catch(error) {
             this.handleError(error)
@@ -39,9 +41,10 @@ export class PeopleXdClient {
     }
 
     async put(path, body){
+        console.log(`Attempting PUT request.`);
         try {
             const response = await axios.put(`${this.url}${path}`, body, { 'headers': this.headers });
-            console.log(`Put request received a response...`)
+            console.log(`PUT request received a response.`)
             return response;
         } catch(error) {
             this.handleError(error)
@@ -50,9 +53,10 @@ export class PeopleXdClient {
     }
 
     async delete(path){
+        console.log(`Attempting DELETE request.`);
         try {
             const response = await axios.delete(`${this.url}${path}`, { 'headers': this.headers });
-            console.log(`Delete request received a response...`);
+            console.log(`DELETE request received a response.`);
             return response;
         } catch(error) {
             this.handleError(error)
@@ -63,7 +67,7 @@ export class PeopleXdClient {
     /**
      * Generic function to handle errors
      * @param  {object} error 
-     * @returns null 
+     * @returns void 
      */
     handleError(error) {
         
