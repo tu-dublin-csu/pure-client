@@ -73,19 +73,19 @@ export class PeopleXdClient {
         
         console.error('Error fetching data.');
 
-        if (!error.response) {
-            //console.error(`Error: `, error.toJSON());
-            throw error;
+        if(error.response){
+            if(error.response.data){
+                console.log('GIT HERE..')
+                throw error.response.data;
+            }
+            
+            if(error.response.status){
+                throw error.response.status;
+            }
         }
 
-        if(error.response.data){
-            //console.error(`Error Response Status: ${error.response.status} - ${STATUS_CODES[error.response.status]}`);
-            throw error.response.data;
-        }
+        // always throw an error
+        throw error;
         
-        if(error.response.status){
-            //console.error('Error Response Data:', error.response.data);
-            throw error.status;
-        }
     }
 }

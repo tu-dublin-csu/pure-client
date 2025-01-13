@@ -1,5 +1,7 @@
 name: 'Only branch develop can merge to branch main'
 
+run-name: ${{ github.actor }} is running PR develop to main check
+
 on:
   pull_request:
 
