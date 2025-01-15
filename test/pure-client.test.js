@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
-import { PeopleXdClient } from './peoplexd-client';
+import { PureClient } from '../src/pure-client.js';
 
 jest.mock('axios');
 
-describe('PeopleXdClient', () => {
+describe('Pure Client', () => {
     let client;
     const url = 'http://example.com/';
     const apiKey = 'test-api-key';
@@ -13,7 +13,7 @@ describe('PeopleXdClient', () => {
     const error = new Error('Network Error');
 
     beforeEach(() => {
-        client = new PeopleXdClient(url, apiKey);
+        client = new PureClient(url, apiKey);
     });
 
     afterEach(() => {
@@ -37,7 +37,7 @@ describe('PeopleXdClient', () => {
 
         expect(axios.get).toHaveBeenCalledTimes(1); 
         expect(axios.get).toHaveBeenCalledWith(`${url}test-path`, { headers: client.headers });
-        expect(response).toBe(responseData);
+        expect(response).toBe(responseData.data);
     });
 
     test('should make a POST request and return response', async () => {
@@ -47,7 +47,7 @@ describe('PeopleXdClient', () => {
 
         expect(axios.post).toHaveBeenCalledTimes(1); 
         expect(axios.post).toHaveBeenCalledWith(`${url}test-path`, { key: 'value' }, { headers: client.headers });
-        expect(response).toBe(responseData);
+        expect(response).toBe(responseData.data);
     });
 
     test('should make a PUT request and return response', async () => {
@@ -57,7 +57,7 @@ describe('PeopleXdClient', () => {
 
         expect(axios.put).toHaveBeenCalledTimes(1); 
         expect(axios.put).toHaveBeenCalledWith(`${url}test-path`, { key: 'value' }, { headers: client.headers });
-        expect(response).toBe(responseData);
+        expect(response).toBe(responseData.data);
     });
 
     test('should make a DELETE request and return response', async () => {

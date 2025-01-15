@@ -1,11 +1,11 @@
-import { PeopleXdClient } from './peoplexd-client.js';
+import { PureClient } from './pure-client.js';
 import 'dotenv/config'
 
 console.log(`Pure Client Starting...`);
 
-const client = new PeopleXdClient(process.env.PURE_URL, process.env.PURE_API_KEY);
+const client = new PureClient(process.env.PURE_URL, process.env.PURE_API_KEY);
 
-const path = 'users/foo';
+const path = 'users/';
 
 //test get request
 try {
