@@ -1,8 +1,8 @@
 name: 'Test, Lint and Build when push to staging'
 on:
     push:
-      branches:
-        - 'staging'
+        branches:
+            - 'staging'
 jobs:
     test:
         runs-on: ubuntu-latest
@@ -23,14 +23,14 @@ jobs:
         env:
             NODE_AUTH_TOKEN: ${{ secrets.PURE_NPM_TOKEN }}
         steps:
-            -   name: Checkout
-                uses: actions/checkout@v4
-            -   name: Set up node
-                uses: actions/setup-node@v4
-                with:
-                    node-version: "22"
-                    registry-url: https://registry.npmjs.org
-            -   name: Install Dependancies
-                run: npm install
-            -   name: Build Package
-                run: npm run build
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Set up node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+                  registry-url: https://registry.npmjs.org
+            - name: Install Dependancies
+              run: npm install
+            - name: Build Package
+              run: npm run build

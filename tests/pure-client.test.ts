@@ -70,17 +70,13 @@ describe('Pure Client', () => {
     test('should handle POST request error', async () => {
         mockedAxios.post.mockRejectedValue(error)
 
-        await expect(
-            client.post('test-path', { key: 'value' })
-        ).rejects.toThrow(error)
+        await expect(client.post('test-path', { key: 'value' })).rejects.toThrow(error)
     })
 
     test('should handle PUT request error', async () => {
         mockedAxios.put.mockRejectedValue(error)
 
-        await expect(client.put('test-path', { key: 'value' })).rejects.toThrow(
-            error
-        )
+        await expect(client.put('test-path', { key: 'value' })).rejects.toThrow(error)
     })
 
     test('should handle DELETE request error', async () => {

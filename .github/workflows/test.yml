@@ -1,9 +1,9 @@
 name: 'Test and Lint code when Pushed to Github or when a Pull Request is made'
 on:
     push:
-        branches-ignore: 
-          - main
-          - staging
+        branches-ignore:
+            - main
+            - staging
     pull_request:
         types: [opened, synchronize]
 jobs:

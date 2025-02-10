@@ -15,9 +15,7 @@
     // Use 'postCreateCommand' to run commands after the container is created.
     "postCreateCommand": "npm install",
 
-    "mounts": [
-        "source=${env:HOME}${env:USERPROFILE}/.npmrc,target=/home/node/.npmrc,type=bind"
-    ]
+    "mounts": ["source=${env:HOME}${env:USERPROFILE}/.npmrc,target=/home/node/.npmrc,type=bind"]
 
     // Configure tool-specific properties.
     // "customizations": {},

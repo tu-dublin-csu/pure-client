@@ -1,16 +1,16 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 
-enum PureClientHeadersContentType {
+enum HeadersContentType {
     APPLICATION_JSON = 'application/json'
 }
 
-enum PureClientHeadersAccept {
+enum HeadersAccept {
     APPLICATION_JSON = 'application/json'
 }
 
-interface PureClientHeaders {
-    'Content-Type': PureClientHeadersContentType
-    Accept: PureClientHeadersAccept
+interface Headers {
+    'Content-Type': HeadersContentType
+    Accept: HeadersAccept
     'api-key': string
 }
 
@@ -20,7 +20,7 @@ interface PureClientHeaders {
 export class PureClient {
     private url: string
     private apiKey: string
-    private headers: PureClientHeaders
+    private headers: Headers
 
     /**
      * Creates an instance of PureClient
@@ -31,8 +31,8 @@ export class PureClient {
         this.url = url
         this.apiKey = apiKey
         this.headers = {
-            'Content-Type': PureClientHeadersContentType.APPLICATION_JSON,
-            Accept: PureClientHeadersAccept.APPLICATION_JSON,
+            'Content-Type': HeadersContentType.APPLICATION_JSON,
+            Accept: HeadersAccept.APPLICATION_JSON,
             'api-key': this.apiKey
         }
     }
