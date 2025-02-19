@@ -2,9 +2,9 @@
     "name": "pure-client",
     "version": "0.0.2-beta",
     "description": "A TypeScript application to interact with the PURE API",
-    "main": "./dist/index.js",
+    "main": "./dist/index.cjs",
     "type": "module",
-    "module": "./dist/index.mjs",
+    "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "files": [
         "dist"
