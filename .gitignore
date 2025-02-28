@@ -44,3 +44,6 @@ src/_main-test-dist-folder.js
 
 # JSDocs
 docs
+
+# Secrets
+.devcontainer/devcontainer.env
