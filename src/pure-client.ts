@@ -14,6 +14,18 @@ interface Headers {
     'api-key': string
 }
 
+interface RequestParameters {
+    size?: number,
+    offset?: number,
+    order?: string,
+    uuid?: string,
+    uuids?: string[],
+    orderings?: string[],
+    searchString?: string,
+    orderBy?: string,
+    fileId?: string,
+    'discipline-scheme'?: string
+}
 /**
  * PureClient class to interact with the PURE API.
  */
@@ -40,14 +52,16 @@ export class PureClient {
     /**
      * Makes a HTTP GET request to the PURE API
      * @param {string} path - The path to the endpoint
+     * @param {RequestParameters} params - Parameters to pass with request
      * @returns {Promise<AxiosResponse>} - The response data from the GET request
      * @throws Will throw an error if the request fails
      */
-    async get(path: string): Promise<AxiosResponse> {
+    async get(path: string, params: RequestParameters = {}): Promise<AxiosResponse> {
         console.log(`Attempting GET request.`)
         try {
             const response = await axios.get(`${this.url}${path}`, {
-                headers: this.headers
+                headers: this.headers,
+                params: params
             } as unknown as AxiosRequestConfig)
             console.log(`GET request received a response.`)
             return response.data
@@ -60,14 +74,16 @@ export class PureClient {
      * Makes a HTTP POST request to the PURE API
      * @param {string} path - The path to the endpoint
      * @param {unknown} body - Depending on the end point of the API request, the body param will have varrying formats
+     * @param {RequestParameters} params - Parameters to pass with request
      * @returns {Promise<AxiosResponse>} - The response data from the POST request
      * @throws Will throw an error if the request fails
      */
-    async post(path: string, body: unknown): Promise<AxiosResponse> {
+    async post(path: string, body: unknown, params: RequestParameters = {}): Promise<AxiosResponse> {
         console.log(`Attempting POST request.`)
         try {
             const response = await axios.post(`${this.url}${path}`, body, {
-                headers: this.headers
+                headers: this.headers,
+                params: params
             } as unknown as AxiosRequestConfig)
             console.log(`POST request received a response.`)
             return response.data
@@ -80,14 +96,16 @@ export class PureClient {
      * Makes a HTTP PUT request to the PURE API
      * @param {string} path - The path to the endpoint
      * @param {unknown} body - Depending on the end point of the API request, the body param will have varrying formats
+     * @param {RequestParameters} params - Parameters to pass with request
      * @returns {Promise<AxiosResponse>} - The response data from the PUT request
      * @throws Will throw an error if the request fails
      */
-    async put(path: string, body: unknown): Promise<AxiosResponse> {
+    async put(path: string, body: unknown, params: RequestParameters = {}): Promise<AxiosResponse> {
         console.log(`Attempting PUT request.`)
         try {
             const response = await axios.put(`${this.url}${path}`, body, {
-                headers: this.headers
+                headers: this.headers,
+                params: params
             } as unknown as AxiosRequestConfig)
             console.log(`PUT request received a response.`)
             return response.data
@@ -99,14 +117,16 @@ export class PureClient {
     /**
      * Makes a HTTP DELETE request to the PURE API
      * @param {string} path - The path to the endpoint
+     * @param {RequestParameters} params - Parameters to pass with request
      * @returns {Promise<AxiosResponse>} - The response data from the DELETE request
      * @throws Will throw an error if the request fails
      */
-    async delete(path: string): Promise<AxiosResponse> {
+    async delete(path: string, params: RequestParameters = {}): Promise<AxiosResponse> {
         console.log(`Attempting DELETE request.`)
         try {
             const response = await axios.delete(`${this.url}${path}`, {
-                headers: this.headers
+                headers: this.headers,
+                params: params
             } as unknown as AxiosRequestConfig)
             console.log(`DELETE request received a response.`)
             return response
