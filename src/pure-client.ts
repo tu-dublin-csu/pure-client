@@ -17,7 +17,14 @@ interface Headers {
 interface RequestParameters {
     size?: number,
     offset?: number,
-    order?: string
+    order?: string,
+    uuid?: string,
+    uuids?: string[],
+    orderings?: string[],
+    searchString?: string,
+    orderBy?: string,
+    fileId?: string,
+    'discipline-scheme'?: string
 }
 /**
  * PureClient class to interact with the PURE API.
