@@ -84,4 +84,14 @@ describe('Pure Client', () => {
 
         await expect(client.delete('test-path')).rejects.toThrow(error)
     })
+
+    test('should handle request with correct parameters', async () => {
+        mockedAxios.get.mockResolvedValue(responseData)
+
+        const response = await client.get('test-path', { size: 1, "discipline-scheme": "test"})
+
+        expect(axios.get).toHaveBeenCalledTimes(1)
+        expect(response).toBe(responseData.data)
+    })
+
 })
