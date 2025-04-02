@@ -15,15 +15,15 @@ interface Headers {
 }
 
 interface RequestParameters {
-    size?: number,
-    offset?: number,
-    order?: string,
-    uuid?: string,
-    uuids?: string[],
-    orderings?: string[],
-    searchString?: string,
-    orderBy?: string,
-    fileId?: string,
+    size?: number
+    offset?: number
+    order?: string
+    uuid?: string
+    uuids?: string[]
+    orderings?: string[]
+    searchString?: string
+    orderBy?: string
+    fileId?: string
     'discipline-scheme'?: string
 }
 /**
