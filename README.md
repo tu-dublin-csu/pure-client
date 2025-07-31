@@ -12,3 +12,4 @@ Recommendation is to carry out development in the supplied `.devcontainer` confi
 - add required environment variables e.g. [[see here]](https://containers.dev/) to a `.devcontainer/devcontainer.env` file
 - build and start the [devContainer](https://containers.dev/)
 - open a terminal in the devContainer and test with `npm run test`
+- use `dummy_proj/*` for testing the locally built code base
