@@ -14,7 +14,8 @@
                 "dbaeumer.vscode-eslint",
                 "esbenp.prettier-vscode",
                 "GitHub.vscode-pull-request-github",
-                "GitHub.vscode-github-actions"
+                "GitHub.vscode-github-actions",
+                "github.copilot"
             ],
             // Add other extensions as needed
             "settings": {
@@ -33,7 +34,7 @@
 
     // Use 'postCreateCommand' to run commands after the container is created.
     "postCreateCommand": "npm install",
-    "runArgs": [["--env-file", "${localWorkspaceFolder}/.devcontainer/devcontainer.env"]],
+    "runArgs": ["--env-file", "${localWorkspaceFolder}/.devcontainer/devcontainer.env"],
     "mounts": [
         "source=${env:HOME}${env:USERPROFILE}/.vscode-zsh-hists/peoplexd_client.zsh_history,target=/home/node/.zsh_history,type=bind",
         "source=${env:HOME}${env:USERPROFILE}/.npmrc,target=/home/node/.npmrc,type=bind"

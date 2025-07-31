@@ -93,4 +93,29 @@ describe('Pure Client', () => {
         expect(axios.get).toHaveBeenCalledTimes(1)
         expect(response).toBe(responseData.data)
     })
+
+    test('should log debug messages when debug mode is enabled', async () => {
+        client.setDebug(true)
+        const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
+        mockedAxios.get.mockResolvedValue(responseData)
+
+        await client.get('test-path')
+
+        expect(logSpy).toHaveBeenCalledWith('Attempting GET request.')
+        expect(logSpy).toHaveBeenCalledWith('GET request received a response.')
+
+        logSpy.mockRestore();
+    });
+
+    test('should not log debug messages when debug mode is disabled', async () => {
+        client.setDebug(false)
+        const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
+        mockedAxios.get.mockResolvedValue(responseData)
+
+        await client.get('test-path')
+
+        expect(logSpy).not.toHaveBeenCalled();
+
+        logSpy.mockRestore();
+    });
 })

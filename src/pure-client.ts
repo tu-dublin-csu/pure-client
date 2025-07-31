@@ -14,7 +14,7 @@ interface Headers {
     'api-key': string
 }
 
-interface RequestParameters {
+export interface RequestParameters {
     size?: number
     offset?: number
     order?: string
@@ -33,6 +33,7 @@ export class PureClient {
     private url: string
     private apiKey: string
     private headers: Headers
+    private enableDebug: boolean = process.env.NODE_ENV === 'DEVELOPMENT'
 
     /**
      * Creates an instance of PureClient
@@ -57,13 +58,13 @@ export class PureClient {
      * @throws Will throw an error if the request fails
      */
     async get(path: string, params: RequestParameters = {}): Promise<AxiosResponse> {
-        console.log(`Attempting GET request.`)
+        this.log(`Attempting GET request.`)
         try {
             const response = await axios.get(`${this.url}${path}`, {
                 headers: this.headers,
                 params: params
             } as unknown as AxiosRequestConfig)
-            console.log(`GET request received a response.`)
+            this.log(`GET request received a response.`)
             return response.data
         } catch (error: unknown) {
             this.handleError(error)
@@ -79,13 +80,13 @@ export class PureClient {
      * @throws Will throw an error if the request fails
      */
     async post(path: string, body: unknown, params: RequestParameters = {}): Promise<AxiosResponse> {
-        console.log(`Attempting POST request.`)
+        this.log(`Attempting POST request.`)
         try {
             const response = await axios.post(`${this.url}${path}`, body, {
                 headers: this.headers,
                 params: params
             } as unknown as AxiosRequestConfig)
-            console.log(`POST request received a response.`)
+            this.log(`POST request received a response.`)
             return response.data
         } catch (error) {
             this.handleError(error)
@@ -101,13 +102,13 @@ export class PureClient {
      * @throws Will throw an error if the request fails
      */
     async put(path: string, body: unknown, params: RequestParameters = {}): Promise<AxiosResponse> {
-        console.log(`Attempting PUT request.`)
+        this.log(`Attempting PUT request.`)
         try {
             const response = await axios.put(`${this.url}${path}`, body, {
                 headers: this.headers,
                 params: params
             } as unknown as AxiosRequestConfig)
-            console.log(`PUT request received a response.`)
+            this.log(`PUT request received a response.`)
             return response.data
         } catch (error) {
             this.handleError(error)
@@ -122,13 +123,13 @@ export class PureClient {
      * @throws Will throw an error if the request fails
      */
     async delete(path: string, params: RequestParameters = {}): Promise<AxiosResponse> {
-        console.log(`Attempting DELETE request.`)
+        this.log(`Attempting DELETE request.`)
         try {
             const response = await axios.delete(`${this.url}${path}`, {
                 headers: this.headers,
                 params: params
             } as unknown as AxiosRequestConfig)
-            console.log(`DELETE request received a response.`)
+            this.log(`DELETE request received a response.`)
             return response
         } catch (error) {
             this.handleError(error)
@@ -144,13 +145,23 @@ export class PureClient {
     private handleError(error: unknown): never {
         if (error instanceof Error) {
             if (error && error.message) {
-                console.log(`Error fetching data: ${error.message}`)
+                this.log(`Error fetching data: ${error.message}`)
             }
         } else {
-            console.log('Error fetching data.')
+            this.log('Error fetching data.')
         }
 
         // always throw an error
         throw error
+    }
+
+    private log(...args: unknown[]) {
+        if (this.enableDebug) {
+            console.log(...args)
+        }
+    }
+
+    setDebug(enable: boolean) {
+        this.enableDebug = enable
     }
 }
