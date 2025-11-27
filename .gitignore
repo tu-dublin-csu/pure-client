@@ -42,4 +42,9 @@ dist
 # JSDocs
 docs
 
+# tmp
+tmp
 .devcontainer/devcontainer.env
+
+# Mac system files
+.DS_Store
