@@ -14,7 +14,6 @@ import {
 	type AllowedKeywordGroupConfigurationList,
 	type LocalesList,
 	type WorkflowListResult,
-	type OrderingsList,
 	type UploadedFile
 } from '../../src/services/equipment'
 
@@ -147,7 +146,6 @@ describe('EquipmentService', () => {
 		const keywordConfigs = { configurations: [] } as unknown as AllowedKeywordGroupConfigurationList
 		const locales = { locales: [] } as unknown as LocalesList
 		const workflow = { items: [] } as unknown as WorkflowListResult
-		const orderings = { orderings: [] } as unknown as OrderingsList
 
 		client.get
 			.mockResolvedValueOnce(classification) // address countries
@@ -168,7 +166,6 @@ describe('EquipmentService', () => {
 			.mockResolvedValueOnce(classification) // types
 			.mockResolvedValueOnce(classification) // web address types
 			.mockResolvedValueOnce(workflow) // workflow steps
-			.mockResolvedValueOnce(orderings) // orderings
 
 		expect(await service.getAllowedAddressCountries()).toBe(classification)
 		expect(client.get).toHaveBeenNthCalledWith(1, `${basePath}/allowed-address-countries`, undefined, undefined)
@@ -233,9 +230,6 @@ describe('EquipmentService', () => {
 
 		expect(await service.getAllowedWorkflowSteps()).toBe(workflow)
 		expect(client.get).toHaveBeenNthCalledWith(18, `${basePath}/allowed-workflow-steps`, undefined, undefined)
-
-		expect(await service.getOrderings()).toBe(orderings)
-		expect(client.get).toHaveBeenNthCalledWith(19, `${basePath}/orderings`, undefined, undefined)
 	})
 
 	it('supports custom base path', async () => {

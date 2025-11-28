@@ -39,7 +39,7 @@ describe('ResearchOutputsService', () => {
         const config: AxiosRequestConfig = { timeout: 2000 }
         const result = { count: 1 } as unknown as ResearchOutputListResult
 
-        client.get.mockResolvedValue(result)
+        client.get.mockResolvedValueOnce(result)
 
         const response = await service.list(params, config)
 
@@ -52,7 +52,7 @@ describe('ResearchOutputsService', () => {
         const result = { count: 1 } as unknown as ResearchOutputListResult
         const config: AxiosRequestConfig = { timeout: 1500 }
 
-        client.post.mockResolvedValue(result)
+        client.post.mockResolvedValueOnce(result)
 
         const response = await service.query(body, config)
 
@@ -63,7 +63,7 @@ describe('ResearchOutputsService', () => {
     it('fetches a single research output', async () => {
         const uuid = '123'
         const result = { uuid } as unknown as ResearchOutput
-        client.get.mockResolvedValue(result)
+        client.get.mockResolvedValueOnce(result)
 
         const response = await service.get(uuid)
 
@@ -73,7 +73,7 @@ describe('ResearchOutputsService', () => {
 
     it('creates a research output', async () => {
         const payload = { title: 'Example' } as unknown as ResearchOutput
-        client.put.mockResolvedValue(payload)
+        client.put.mockResolvedValueOnce(payload)
 
         const response = await service.create(payload)
 
@@ -84,7 +84,7 @@ describe('ResearchOutputsService', () => {
     it('updates an existing research output', async () => {
         const uuid = '456'
         const payload = { uuid } as unknown as ResearchOutput
-        client.put.mockResolvedValue(payload)
+        client.put.mockResolvedValueOnce(payload)
 
         const response = await service.update(uuid, payload)
 
@@ -94,7 +94,7 @@ describe('ResearchOutputsService', () => {
 
     it('removes a research output', async () => {
         const uuid = '789'
-        client.delete.mockResolvedValue(undefined)
+        client.delete.mockResolvedValueOnce(undefined)
 
         await service.remove(uuid)
 
@@ -103,7 +103,7 @@ describe('ResearchOutputsService', () => {
 
     it('retrieves allowed categories', async () => {
         const result = { items: [] } as unknown as ClassificationRefList
-        client.get.mockResolvedValue(result)
+        client.get.mockResolvedValueOnce(result)
 
         const response = await service.getAllowedCategories()
 
@@ -113,7 +113,7 @@ describe('ResearchOutputsService', () => {
 
     it('retrieves orderings', async () => {
         const result = { orderings: [] } as unknown as OrderingsList
-        client.get.mockResolvedValue(result)
+        client.get.mockResolvedValueOnce(result)
 
         const response = await service.getOrderings()
 
@@ -125,7 +125,7 @@ describe('ResearchOutputsService', () => {
         const customBasePath = '/custom'
         const customService = new ResearchOutputsService(client, { basePath: customBasePath })
         const result = { count: 0 } as unknown as ResearchOutputListResult
-        client.get.mockResolvedValue(result)
+        client.get.mockResolvedValueOnce(result)
 
         await customService.list()
 

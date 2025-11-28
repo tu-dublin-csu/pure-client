@@ -11,7 +11,7 @@ import {
     type OrderingsList
 } from '../../src/services/thesauri'
 
-type PureClientLike = Pick<PureClient, 'get' | 'post'>
+type PureClientLike = Pick<PureClient, 'get' | 'post' | 'put' | 'delete'>
 
 describe('ThesauriService', () => {
     let client: jest.Mocked<PureClientLike>
@@ -22,7 +22,9 @@ describe('ThesauriService', () => {
     beforeEach(() => {
         client = {
             get: jest.fn(),
-            post: jest.fn()
+            post: jest.fn(),
+            put: jest.fn(),
+            delete: jest.fn()
         } as unknown as jest.Mocked<PureClientLike>
 
         service = new ThesauriService(client)

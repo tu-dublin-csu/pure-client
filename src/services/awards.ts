@@ -3,6 +3,8 @@ import type { AxiosRequestConfig } from 'axios'
 import type { components, operations } from '../generated/pure'
 import type { PureClient } from '../pure-client'
 
+import { awardsServiceConfig, invokeOperation } from './service-config'
+
 export type Award = components['schemas']['Award']
 export type AwardListResult = components['schemas']['AwardListResult']
 export type AwardsQuery = components['schemas']['AwardsQuery']
@@ -26,69 +28,113 @@ export interface AwardsServiceOptions {
 
 type PureClientLike = Pick<PureClient, 'get' | 'post' | 'put' | 'delete'>
 
-const DEFAULT_BASE_PATH = '/awards'
-
 export class AwardsService {
     private readonly basePath: string
+    private readonly operations = awardsServiceConfig.operations
 
     constructor(private readonly client: PureClientLike, options: AwardsServiceOptions = {}) {
-        this.basePath = options.basePath ?? DEFAULT_BASE_PATH
+        this.basePath = options.basePath ?? awardsServiceConfig.basePath
     }
 
     async list(params?: AwardListParams, config?: AxiosRequestConfig): Promise<AwardListResult> {
-        return this.client.get<AwardListResult>(this.basePath, params, config)
+        return invokeOperation<AwardListResult>(this.client, this.basePath, this.operations.list, {
+            query: params,
+            config
+        })
     }
 
     async query(body: AwardsQuery, config?: AxiosRequestConfig): Promise<AwardListResult> {
-        return this.client.post<AwardListResult>(`${this.basePath}/search`, body, undefined, config)
+        return invokeOperation<AwardListResult>(this.client, this.basePath, this.operations.query, {
+            body,
+            config
+        })
     }
 
     async get(uuid: string, config?: AxiosRequestConfig): Promise<Award> {
-        return this.client.get<Award>(`${this.basePath}/${uuid}`, undefined, config)
+        return invokeOperation<Award>(this.client, this.basePath, this.operations.get, {
+            pathParams: { uuid },
+            config
+        })
     }
 
     async create(payload: Award, config?: AxiosRequestConfig): Promise<Award> {
-        return this.client.put<Award>(this.basePath, payload, undefined, config)
+        return invokeOperation<Award>(this.client, this.basePath, this.operations.create, {
+            body: payload,
+            config
+        })
     }
 
     async update(uuid: string, payload: Award, config?: AxiosRequestConfig): Promise<Award> {
-        return this.client.put<Award>(`${this.basePath}/${uuid}`, payload, undefined, config)
+        return invokeOperation<Award>(this.client, this.basePath, this.operations.update, {
+            pathParams: { uuid },
+            body: payload,
+            config
+        })
     }
 
     async remove(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.delete<void>(`${this.basePath}/${uuid}`, undefined, config)
+        await invokeOperation<void>(this.client, this.basePath, this.operations.remove, {
+            pathParams: { uuid },
+            config
+        })
     }
 
     async lock(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.post<void>(`${this.basePath}/${uuid}/actions/lock`, undefined, undefined, config)
+        await invokeOperation<void>(this.client, this.basePath, this.operations.lock, {
+            pathParams: { uuid },
+            config
+        })
     }
 
     async unlock(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.post<void>(`${this.basePath}/${uuid}/actions/unlock`, undefined, undefined, config)
+        await invokeOperation<void>(this.client, this.basePath, this.operations.unlock, {
+            pathParams: { uuid },
+            config
+        })
     }
 
     async getBudgets(uuid: string, config?: AxiosRequestConfig): Promise<AwardBudgetResult> {
-        return this.client.get<AwardBudgetResult>(`${this.basePath}/${uuid}/budgets`, undefined, config)
+        return invokeOperation<AwardBudgetResult>(this.client, this.basePath, this.operations.getBudgets, {
+            pathParams: { uuid },
+            config
+        })
     }
 
     async getBudget(uuid: string, id: number, config?: AxiosRequestConfig): Promise<AwardBudget> {
-        return this.client.get<AwardBudget>(`${this.basePath}/${uuid}/budgets/${id}`, undefined, config)
+        return invokeOperation<AwardBudget>(this.client, this.basePath, this.operations.getBudget, {
+            pathParams: { uuid, id },
+            config
+        })
     }
 
     async updateBudget(uuid: string, id: number, payload: AwardBudget, config?: AxiosRequestConfig): Promise<AwardBudget> {
-        return this.client.put<AwardBudget>(`${this.basePath}/${uuid}/budgets/${id}`, payload, undefined, config)
+        return invokeOperation<AwardBudget>(this.client, this.basePath, this.operations.updateBudget, {
+            pathParams: { uuid, id },
+            body: payload,
+            config
+        })
     }
 
     async getCluster(uuid: string, config?: AxiosRequestConfig): Promise<AwardCluster> {
-        return this.client.get<AwardCluster>(`${this.basePath}/${uuid}/cluster`, undefined, config)
+        return invokeOperation<AwardCluster>(this.client, this.basePath, this.operations.getCluster, {
+            pathParams: { uuid },
+            config
+        })
     }
 
     async listDependents(uuid: string, params?: AwardDependentsParams, config?: AxiosRequestConfig): Promise<ContentRefListResult> {
-        return this.client.get<ContentRefListResult>(`${this.basePath}/${uuid}/dependents`, params, config)
+        return invokeOperation<ContentRefListResult>(this.client, this.basePath, this.operations.listDependents, {
+            pathParams: { uuid },
+            query: params,
+            config
+        })
     }
 
     async getDisciplineAssociation(uuid: string, disciplineScheme: string, config?: AxiosRequestConfig): Promise<DisciplinesAssociation> {
-        return this.client.get<DisciplinesAssociation>(`${this.basePath}/${uuid}/disciplines/${disciplineScheme}`, undefined, config)
+        return invokeOperation<DisciplinesAssociation>(this.client, this.basePath, this.operations.getDisciplineAssociation, {
+            pathParams: { uuid, 'discipline-scheme': disciplineScheme },
+            config
+        })
     }
 
     async updateDisciplineAssociation(
@@ -97,26 +143,53 @@ export class AwardsService {
         payload: DisciplinesAssociation,
         config?: AxiosRequestConfig
     ): Promise<DisciplinesAssociation> {
-        return this.client.put<DisciplinesAssociation>(`${this.basePath}/${uuid}/disciplines/${disciplineScheme}`, payload, undefined, config)
+        return invokeOperation<DisciplinesAssociation>(
+            this.client,
+            this.basePath,
+            this.operations.updateDisciplineAssociation,
+            {
+                pathParams: { uuid, 'discipline-scheme': disciplineScheme },
+                body: payload,
+                config
+            }
+        )
     }
 
     async listNotes(uuid: string, config?: AxiosRequestConfig): Promise<NoteListResult> {
-        return this.client.get<NoteListResult>(`${this.basePath}/${uuid}/notes`, undefined, config)
+        return invokeOperation<NoteListResult>(this.client, this.basePath, this.operations.listNotes, {
+            pathParams: { uuid },
+            config
+        })
     }
 
     async createNote(uuid: string, note: Note, config?: AxiosRequestConfig): Promise<Note> {
-        return this.client.put<Note>(`${this.basePath}/${uuid}/notes`, note, undefined, config)
+        return invokeOperation<Note>(this.client, this.basePath, this.operations.createNote, {
+            pathParams: { uuid },
+            body: note,
+            config
+        })
     }
 
     async getAllowedAwardholderRoles(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-awardholder-roles`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedAwardholderRoles,
+            {
+                config
+            }
+        )
     }
 
     async getAllowedTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(this.client, this.basePath, this.operations.getAllowedTypes, {
+            config
+        })
     }
 
     async getOrderings(config?: AxiosRequestConfig): Promise<OrderingsList> {
-        return this.client.get<OrderingsList>(`${this.basePath}/orderings`, undefined, config)
+        return invokeOperation<OrderingsList>(this.client, this.basePath, this.operations.getOrderings, {
+            config
+        })
     }
 }

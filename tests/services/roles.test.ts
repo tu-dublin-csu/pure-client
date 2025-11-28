@@ -3,7 +3,7 @@ import type { AxiosRequestConfig } from 'axios'
 import { PureClient } from '../../src/pure-client'
 import { RolesService, type AssignableRole } from '../../src/services/roles'
 
-type PureClientLike = Pick<PureClient, 'get'>
+type PureClientLike = Pick<PureClient, 'get' | 'post' | 'put' | 'delete'>
 
 describe('RolesService', () => {
     let client: jest.Mocked<PureClientLike>
@@ -13,7 +13,10 @@ describe('RolesService', () => {
 
     beforeEach(() => {
         client = {
-            get: jest.fn()
+            get: jest.fn(),
+            post: jest.fn(),
+            put: jest.fn(),
+            delete: jest.fn()
         } as unknown as jest.Mocked<PureClientLike>
 
         service = new RolesService(client)

@@ -3,6 +3,8 @@ import type { AxiosRequestConfig } from 'axios'
 import type { components, operations } from '../generated/pure'
 import type { PureClient } from '../pure-client'
 
+import { externalOrganizationsServiceConfig, invokeOperation } from './service-config'
+
 export type ExternalOrganization = components['schemas']['ExternalOrganization']
 export type ExternalOrganizationListResult = components['schemas']['ExternalOrganizationListResult']
 export type ExternalOrganizationsQuery = components['schemas']['ExternalOrganizationsQuery']
@@ -28,134 +30,221 @@ export type ExternalOrganizationDependentsParams = NonNullable<operations['exter
 export type ExternalOrganizationNotesParams = NonNullable<operations['externalOrganization_listNotes']['parameters']['query']>
 export type ExternalOrganizationAllowedDisciplinesParams = NonNullable<operations['externalOrganization_getAllowedDisciplines']['parameters']['query']>
 
+type ExternalOrganizationPathParams = operations['externalOrganization_get']['parameters']['path']
+type ExternalOrganizationDependentsPathParams = operations['externalOrganization_dependents']['parameters']['path']
+type ExternalOrganizationDisciplinePathParams = operations['externalOrganization_getDisciplineAssociation']['parameters']['path']
+type ExternalOrganizationDisciplineListPathParams = operations['externalOrganization_listDisciplineAssociations']['parameters']['path']
+type ExternalOrganizationAllowedDisciplinePathParams = operations['externalOrganization_getAllowedDisciplines']['parameters']['path']
+type ExternalOrganizationFilePathParams = operations['externalOrganization_getFile']['parameters']['path']
+type ExternalOrganizationKeywordGroupPathParams = operations['externalOrganization_getAllowedKeywordGroupConfigurationClassifications']['parameters']['path']
+
 export interface ExternalOrganizationsServiceOptions {
     basePath?: string
 }
 
 type PureClientLike = Pick<PureClient, 'get' | 'post' | 'put' | 'delete'>
 
-const DEFAULT_BASE_PATH = '/external-organizations'
-
 export class ExternalOrganizationsService {
     private readonly basePath: string
+    private readonly operations = externalOrganizationsServiceConfig.operations
 
     constructor(private readonly client: PureClientLike, options: ExternalOrganizationsServiceOptions = {}) {
-        this.basePath = options.basePath ?? DEFAULT_BASE_PATH
+        this.basePath = options.basePath ?? externalOrganizationsServiceConfig.basePath
     }
 
-    async list(params?: ExternalOrganizationListParams, config?: AxiosRequestConfig): Promise<ExternalOrganizationListResult> {
-        return this.client.get<ExternalOrganizationListResult>(this.basePath, params, config)
+    async list(
+        params?: ExternalOrganizationListParams,
+        config?: AxiosRequestConfig
+    ): Promise<ExternalOrganizationListResult> {
+        return invokeOperation<ExternalOrganizationListResult>(this.client, this.basePath, this.operations.list, {
+            query: params,
+            config
+        })
     }
 
-    async query(body: ExternalOrganizationsQuery, config?: AxiosRequestConfig): Promise<ExternalOrganizationListResult> {
-        return this.client.post<ExternalOrganizationListResult>(`${this.basePath}/search`, body, undefined, config)
+    async query(
+        body: ExternalOrganizationsQuery,
+        config?: AxiosRequestConfig
+    ): Promise<ExternalOrganizationListResult> {
+        return invokeOperation<ExternalOrganizationListResult>(this.client, this.basePath, this.operations.query, {
+            body,
+            config
+        })
     }
 
-    async get(uuid: string, config?: AxiosRequestConfig): Promise<ExternalOrganization> {
-        return this.client.get<ExternalOrganization>(`${this.basePath}/${uuid}`, undefined, config)
+    async get(uuid: ExternalOrganizationPathParams['uuid'], config?: AxiosRequestConfig): Promise<ExternalOrganization> {
+        return invokeOperation<ExternalOrganization>(this.client, this.basePath, this.operations.get, {
+            pathParams: { uuid },
+            config
+        })
     }
 
     async create(payload: ExternalOrganization, config?: AxiosRequestConfig): Promise<ExternalOrganization> {
-        return this.client.put<ExternalOrganization>(this.basePath, payload, undefined, config)
+        return invokeOperation<ExternalOrganization>(this.client, this.basePath, this.operations.create, {
+            body: payload,
+            config
+        })
     }
 
-    async update(uuid: string, payload: ExternalOrganization, config?: AxiosRequestConfig): Promise<ExternalOrganization> {
-        return this.client.put<ExternalOrganization>(`${this.basePath}/${uuid}`, payload, undefined, config)
+    async update(
+        uuid: ExternalOrganizationPathParams['uuid'],
+        payload: ExternalOrganization,
+        config?: AxiosRequestConfig
+    ): Promise<ExternalOrganization> {
+        return invokeOperation<ExternalOrganization>(this.client, this.basePath, this.operations.update, {
+            pathParams: { uuid },
+            body: payload,
+            config
+        })
     }
 
-    async remove(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.delete<void>(`${this.basePath}/${uuid}`, undefined, config)
+    async remove(uuid: ExternalOrganizationPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+        await invokeOperation<void>(this.client, this.basePath, this.operations.remove, {
+            pathParams: { uuid },
+            config
+        })
     }
 
-    async lock(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.post<void>(`${this.basePath}/${uuid}/actions/lock`, undefined, undefined, config)
+    async lock(uuid: ExternalOrganizationPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+        await invokeOperation<void>(this.client, this.basePath, this.operations.lock, {
+            pathParams: { uuid },
+            config
+        })
     }
 
-    async unlock(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.post<void>(`${this.basePath}/${uuid}/actions/unlock`, undefined, undefined, config)
+    async unlock(uuid: ExternalOrganizationPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+        await invokeOperation<void>(this.client, this.basePath, this.operations.unlock, {
+            pathParams: { uuid },
+            config
+        })
     }
 
     async listDependents(
-        uuid: string,
+        uuid: ExternalOrganizationDependentsPathParams['uuid'],
         params?: ExternalOrganizationDependentsParams,
         config?: AxiosRequestConfig
     ): Promise<ContentRefListResult> {
-        return this.client.get<ContentRefListResult>(`${this.basePath}/${uuid}/dependents`, params, config)
+        return invokeOperation<ContentRefListResult>(this.client, this.basePath, this.operations.listDependents, {
+            pathParams: { uuid },
+            query: params,
+            config
+        })
     }
 
     async getDisciplineAssociation(
-        uuid: string,
-        disciplineScheme: string,
+        uuid: ExternalOrganizationDisciplinePathParams['uuid'],
+        disciplineScheme: ExternalOrganizationDisciplinePathParams['discipline-scheme'],
         config?: AxiosRequestConfig
     ): Promise<DisciplinesAssociation> {
-        return this.client.get<DisciplinesAssociation>(
-            `${this.basePath}/${uuid}/disciplines/${disciplineScheme}`,
-            undefined,
-            config
+        return invokeOperation<DisciplinesAssociation>(
+            this.client,
+            this.basePath,
+            this.operations.getDisciplineAssociation,
+            {
+                pathParams: { uuid, 'discipline-scheme': disciplineScheme },
+                config
+            }
         )
     }
 
     async updateDisciplineAssociation(
-        uuid: string,
-        disciplineScheme: string,
+        uuid: ExternalOrganizationDisciplinePathParams['uuid'],
+        disciplineScheme: ExternalOrganizationDisciplinePathParams['discipline-scheme'],
         payload: DisciplinesAssociation,
         config?: AxiosRequestConfig
     ): Promise<DisciplinesAssociation> {
-        return this.client.put<DisciplinesAssociation>(
-            `${this.basePath}/${uuid}/disciplines/${disciplineScheme}`,
-            payload,
-            undefined,
-            config
+        return invokeOperation<DisciplinesAssociation>(
+            this.client,
+            this.basePath,
+            this.operations.updateDisciplineAssociation,
+            {
+                pathParams: { uuid, 'discipline-scheme': disciplineScheme },
+                body: payload,
+                config
+            }
         )
     }
 
     async listDisciplineAssociations(
-        disciplineScheme: string,
+        disciplineScheme: ExternalOrganizationDisciplineListPathParams['discipline-scheme'],
         body: DisciplinesAssociationsQuery,
         config?: AxiosRequestConfig
     ): Promise<DisciplinesAssociationListResult> {
-        return this.client.post<DisciplinesAssociationListResult>(
-            `${this.basePath}/disciplines/${disciplineScheme}/search`,
-            body,
-            undefined,
-            config
+        return invokeOperation<DisciplinesAssociationListResult>(
+            this.client,
+            this.basePath,
+            this.operations.listDisciplineAssociations,
+            {
+                pathParams: { 'discipline-scheme': disciplineScheme },
+                body,
+                config
+            }
         )
     }
 
     async getAllowedDisciplines(
-        disciplineScheme: string,
+        disciplineScheme: ExternalOrganizationAllowedDisciplinePathParams['discipline-scheme'],
         params?: ExternalOrganizationAllowedDisciplinesParams,
         config?: AxiosRequestConfig
     ): Promise<DisciplinesDisciplineListResult> {
-        return this.client.get<DisciplinesDisciplineListResult>(
-            `${this.basePath}/disciplines/${disciplineScheme}/allowed-disciplines`,
-            params,
-            config
+        return invokeOperation<DisciplinesDisciplineListResult>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedDisciplines,
+            {
+                pathParams: { 'discipline-scheme': disciplineScheme },
+                query: params,
+                config
+            }
         )
     }
 
     async getAllowedDisciplineSchemes(config?: AxiosRequestConfig): Promise<DisciplinesDisciplineSchemeListResult> {
-        return this.client.get<DisciplinesDisciplineSchemeListResult>(
-            `${this.basePath}/disciplines/allowed-discipline-schemes`,
-            undefined,
-            config
+        return invokeOperation<DisciplinesDisciplineSchemeListResult>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedDisciplineSchemes,
+            { config }
         )
     }
 
     async getOrderings(config?: AxiosRequestConfig): Promise<OrderingsList> {
-        return this.client.get<OrderingsList>(`${this.basePath}/orderings`, undefined, config)
+        return invokeOperation<OrderingsList>(this.client, this.basePath, this.operations.getOrderings, { config })
     }
 
-    async listNotes(uuid: string, params?: ExternalOrganizationNotesParams, config?: AxiosRequestConfig): Promise<NoteListResult> {
-        return this.client.get<NoteListResult>(`${this.basePath}/${uuid}/notes`, params, config)
+    async listNotes(
+        uuid: ExternalOrganizationPathParams['uuid'],
+        params?: ExternalOrganizationNotesParams,
+        config?: AxiosRequestConfig
+    ): Promise<NoteListResult> {
+        return invokeOperation<NoteListResult>(this.client, this.basePath, this.operations.listNotes, {
+            pathParams: { uuid },
+            query: params,
+            config
+        })
     }
 
-    async createNote(uuid: string, note: Note, config?: AxiosRequestConfig): Promise<Note> {
-        return this.client.put<Note>(`${this.basePath}/${uuid}/notes`, note, undefined, config)
+    async createNote(
+        uuid: ExternalOrganizationPathParams['uuid'],
+        note: Note,
+        config?: AxiosRequestConfig
+    ): Promise<Note> {
+        return invokeOperation<Note>(this.client, this.basePath, this.operations.createNote, {
+            pathParams: { uuid },
+            body: note,
+            config
+        })
     }
 
-    async getFile(uuid: string, fileId: string, config?: AxiosRequestConfig): Promise<string> {
-        return this.client.get<string>(`${this.basePath}/${uuid}/files/${fileId}`, undefined, config)
+    async getFile(
+        uuid: ExternalOrganizationFilePathParams['uuid'],
+        fileId: ExternalOrganizationFilePathParams['fileId'],
+        config?: AxiosRequestConfig
+    ): Promise<string> {
+        return invokeOperation<string>(this.client, this.basePath, this.operations.getFile, {
+            pathParams: { uuid, fileId },
+            config
+        })
     }
 
     async uploadFile(file: string, contentType?: string, config?: AxiosRequestConfig): Promise<UploadedFile> {
@@ -169,85 +258,149 @@ export class ExternalOrganizationsService {
               }
             : config
 
-        return this.client.put<UploadedFile>(`${this.basePath}/file-uploads`, file, undefined, uploadConfig)
+        return invokeOperation<UploadedFile>(this.client, this.basePath, this.operations.uploadFile, {
+            body: file,
+            config: uploadConfig
+        })
     }
 
     async merge(refs: ExternalOrganizationRefList, config?: AxiosRequestConfig): Promise<ExternalOrganization> {
-        return this.client.post<ExternalOrganization>(`${this.basePath}/merge`, refs, undefined, config)
+        return invokeOperation<ExternalOrganization>(this.client, this.basePath, this.operations.merge, {
+            body: refs,
+            config
+        })
     }
 
     async previewDeduplication(
         organizations: ExternalOrganizationList,
         config?: AxiosRequestConfig
     ): Promise<ExternalOrganizationListResult> {
-        return this.client.post<ExternalOrganizationListResult>(
-            `${this.basePath}/preview-deduplication`,
-            organizations,
-            undefined,
-            config
+        return invokeOperation<ExternalOrganizationListResult>(
+            this.client,
+            this.basePath,
+            this.operations.previewDeduplication,
+            {
+                body: organizations,
+                config
+            }
         )
     }
 
     async getAllowedAddressCountries(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-address-countries`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedAddressCountries,
+            { config }
+        )
     }
 
     async getAllowedAddressSubdivisions(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-address-subdivision`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedAddressSubdivisions,
+            { config }
+        )
     }
 
     async getAllowedClassifiedImageTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-classified-file-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedClassifiedImageTypes,
+            { config }
+        )
     }
 
     async getAllowedClassifiedIdentifierTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-classified-identifier-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedClassifiedIdentifierTypes,
+            { config }
+        )
     }
 
     async getAllowedDocumentLicenses(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-document-licenses`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedDocumentLicenses,
+            { config }
+        )
     }
 
     async getAllowedDocumentTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-document-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedDocumentTypes,
+            { config }
+        )
     }
 
     async getAllowedKeywordGroupConfigurations(config?: AxiosRequestConfig): Promise<AllowedKeywordGroupConfigurationList> {
-        return this.client.get<AllowedKeywordGroupConfigurationList>(
-            `${this.basePath}/allowed-keyword-group-configurations`,
-            undefined,
-            config
+        return invokeOperation<AllowedKeywordGroupConfigurationList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedKeywordGroupConfigurations,
+            { config }
         )
     }
 
     async getAllowedKeywordGroupConfigurationClassifications(
-        id: number,
+        id: ExternalOrganizationKeywordGroupPathParams['id'],
         config?: AxiosRequestConfig
     ): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(
-            `${this.basePath}/allowed-keyword-group-configurations/${id}/classifications`,
-            undefined,
-            config
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedKeywordGroupConfigurationClassifications,
+            {
+                pathParams: { id },
+                config
+            }
         )
     }
 
     async getAllowedLinkTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-link-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedLinkTypes,
+            { config }
+        )
     }
 
     async getAllowedLocales(config?: AxiosRequestConfig): Promise<LocalesList> {
-        return this.client.get<LocalesList>(`${this.basePath}/allowed-locales`, undefined, config)
+        return invokeOperation<LocalesList>(this.client, this.basePath, this.operations.getAllowedLocales, { config })
     }
 
     async getAllowedNatureTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-nature-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedNatureTypes,
+            { config }
+        )
     }
 
     async getAllowedTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedTypes,
+            { config }
+        )
     }
 
     async getAllowedWorkflowSteps(config?: AxiosRequestConfig): Promise<WorkflowListResult> {
-        return this.client.get<WorkflowListResult>(`${this.basePath}/allowed-workflow-steps`, undefined, config)
+        return invokeOperation<WorkflowListResult>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedWorkflowSteps,
+            { config }
+        )
     }
 }

@@ -3,6 +3,8 @@ import type { AxiosRequestConfig } from 'axios'
 import type { components, operations } from '../generated/pure'
 import type { PureClient } from '../pure-client'
 
+import { invokeOperation, usersServiceConfig } from './service-config'
+
 export type User = components['schemas']['User']
 export type UserListResult = components['schemas']['UserListResult']
 export type UserRoles = components['schemas']['UserRoles']
@@ -11,62 +13,106 @@ export type OrderingsList = components['schemas']['OrderingsList']
 export type UserListParams = NonNullable<operations['user_list']['parameters']['query']>
 export type UserResetPasswordParams = NonNullable<operations['user_resetPassword']['parameters']['query']>
 
+type UserPathParams = operations['user_get']['parameters']['path']
+type UserRolesPathParams = operations['user_get_roles_for_user']['parameters']['path']
+type UserResetPasswordPathParams = operations['user_resetPassword']['parameters']['path']
+
 export interface UsersServiceOptions {
     basePath?: string
 }
 
 type PureClientLike = Pick<PureClient, 'get' | 'post' | 'put' | 'delete'>
 
-const DEFAULT_BASE_PATH = '/users'
-
 export class UsersService {
     private readonly basePath: string
+    private readonly operations = usersServiceConfig.operations
 
     constructor(private readonly client: PureClientLike, options: UsersServiceOptions = {}) {
-        this.basePath = options.basePath ?? DEFAULT_BASE_PATH
+        this.basePath = options.basePath ?? usersServiceConfig.basePath
     }
 
     async list(params?: UserListParams, config?: AxiosRequestConfig): Promise<UserListResult> {
-        return this.client.get<UserListResult>(this.basePath, params, config)
+        return invokeOperation<UserListResult>(this.client, this.basePath, this.operations.list, {
+            query: params,
+            config
+        })
     }
 
-    async get(uuid: string, config?: AxiosRequestConfig): Promise<User> {
-        return this.client.get<User>(`${this.basePath}/${uuid}`, undefined, config)
+    async get(uuid: UserPathParams['uuid'], config?: AxiosRequestConfig): Promise<User> {
+        return invokeOperation<User>(this.client, this.basePath, this.operations.get, {
+            pathParams: { uuid },
+            config
+        })
     }
 
     async create(payload: User, config?: AxiosRequestConfig): Promise<User> {
-        return this.client.put<User>(this.basePath, payload, undefined, config)
+        return invokeOperation<User>(this.client, this.basePath, this.operations.create, {
+            body: payload,
+            config
+        })
     }
 
-    async update(uuid: string, payload: User, config?: AxiosRequestConfig): Promise<User> {
-        return this.client.put<User>(`${this.basePath}/${uuid}`, payload, undefined, config)
+    async update(uuid: UserPathParams['uuid'], payload: User, config?: AxiosRequestConfig): Promise<User> {
+        return invokeOperation<User>(this.client, this.basePath, this.operations.update, {
+            pathParams: { uuid },
+            body: payload,
+            config
+        })
     }
 
-    async remove(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.delete<void>(`${this.basePath}/${uuid}`, undefined, config)
+    async remove(uuid: UserPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+        await invokeOperation<void>(this.client, this.basePath, this.operations.remove, {
+            pathParams: { uuid },
+            config
+        })
     }
 
-    async lock(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.post<void>(`${this.basePath}/${uuid}/actions/lock`, undefined, undefined, config)
+    async lock(uuid: UserPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+        await invokeOperation<void>(this.client, this.basePath, this.operations.lock, {
+            pathParams: { uuid },
+            config
+        })
     }
 
-    async unlock(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.post<void>(`${this.basePath}/${uuid}/actions/unlock`, undefined, undefined, config)
+    async unlock(uuid: UserPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+        await invokeOperation<void>(this.client, this.basePath, this.operations.unlock, {
+            pathParams: { uuid },
+            config
+        })
     }
 
-    async resetPassword(uuid: string, params?: UserResetPasswordParams, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.post<void>(`${this.basePath}/${uuid}/actions/reset-password`, undefined, params, config)
+    async resetPassword(
+        uuid: UserResetPasswordPathParams['uuid'],
+        params?: UserResetPasswordParams,
+        config?: AxiosRequestConfig
+    ): Promise<void> {
+        await invokeOperation<void>(this.client, this.basePath, this.operations.resetPassword, {
+            pathParams: { uuid },
+            query: params,
+            config
+        })
     }
 
-    async listRoles(uuid: string, config?: AxiosRequestConfig): Promise<UserRoles> {
-        return this.client.get<UserRoles>(`${this.basePath}/${uuid}/roles`, undefined, config)
+    async listRoles(uuid: UserRolesPathParams['uuid'], config?: AxiosRequestConfig): Promise<UserRoles> {
+        return invokeOperation<UserRoles>(this.client, this.basePath, this.operations.listRoles, {
+            pathParams: { uuid },
+            config
+        })
     }
 
-    async updateRoles(uuid: string, roles: UserRoles, config?: AxiosRequestConfig): Promise<UserRoles> {
-        return this.client.put<UserRoles>(`${this.basePath}/${uuid}/roles`, roles, undefined, config)
+    async updateRoles(
+        uuid: UserRolesPathParams['uuid'],
+        roles: UserRoles,
+        config?: AxiosRequestConfig
+    ): Promise<UserRoles> {
+        return invokeOperation<UserRoles>(this.client, this.basePath, this.operations.updateRoles, {
+            pathParams: { uuid },
+            body: roles,
+            config
+        })
     }
 
     async getOrderings(config?: AxiosRequestConfig): Promise<OrderingsList> {
-        return this.client.get<OrderingsList>(`${this.basePath}/orderings`, undefined, config)
+        return invokeOperation<OrderingsList>(this.client, this.basePath, this.operations.getOrderings, { config })
     }
 }

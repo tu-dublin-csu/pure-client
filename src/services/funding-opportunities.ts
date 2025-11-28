@@ -3,6 +3,8 @@ import type { AxiosRequestConfig } from 'axios'
 import type { components, operations } from '../generated/pure'
 import type { PureClient } from '../pure-client'
 
+import { fundingOpportunitiesServiceConfig, invokeOperation } from './service-config'
+
 export type FundingOpportunity = components['schemas']['FundingOpportunity']
 export type FundingOpportunityListResult = components['schemas']['FundingOpportunityListResult']
 export type FundingOpportunitiesQuery = components['schemas']['FundingOpportunitiesQuery']
@@ -19,140 +21,260 @@ export type FundingOpportunityListParams = NonNullable<operations['fundingOpport
 export type FundingOpportunityDependentsParams = NonNullable<operations['fundingOpportunity_dependents']['parameters']['query']>
 export type FundingOpportunityNotesParams = NonNullable<operations['fundingOpportunity_listNotes']['parameters']['query']>
 
+type FundingOpportunityPathParams = operations['fundingOpportunity_get']['parameters']['path']
+type FundingOpportunityDependentsPathParams = operations['fundingOpportunity_dependents']['parameters']['path']
+type FundingOpportunityFilePathParams = operations['fundingOpportunity_getFile']['parameters']['path']
+type FundingOpportunityNotesPathParams = operations['fundingOpportunity_listNotes']['parameters']['path']
+type FundingOpportunityCustomFieldPathParams =
+    operations['fundingOpportunity_getAllowedCustomDefinedFieldClassifications']['parameters']['path']
+type FundingOpportunityKeywordGroupPathParams =
+    operations['fundingOpportunity_getAllowedKeywordGroupConfigurationClassifications']['parameters']['path']
+
 export interface FundingOpportunitiesServiceOptions {
     basePath?: string
 }
 
 type PureClientLike = Pick<PureClient, 'get' | 'post' | 'put' | 'delete'>
 
-const DEFAULT_BASE_PATH = '/funding-opportunities'
-
 export class FundingOpportunitiesService {
     private readonly basePath: string
+    private readonly operations = fundingOpportunitiesServiceConfig.operations
 
     constructor(private readonly client: PureClientLike, options: FundingOpportunitiesServiceOptions = {}) {
-        this.basePath = options.basePath ?? DEFAULT_BASE_PATH
+        this.basePath = options.basePath ?? fundingOpportunitiesServiceConfig.basePath
     }
 
     async list(params?: FundingOpportunityListParams, config?: AxiosRequestConfig): Promise<FundingOpportunityListResult> {
-        return this.client.get<FundingOpportunityListResult>(this.basePath, params, config)
+        return invokeOperation<FundingOpportunityListResult>(this.client, this.basePath, this.operations.list, {
+            query: params,
+            config
+        })
     }
 
     async query(body: FundingOpportunitiesQuery, config?: AxiosRequestConfig): Promise<FundingOpportunityListResult> {
-        return this.client.post<FundingOpportunityListResult>(`${this.basePath}/search`, body, undefined, config)
+        return invokeOperation<FundingOpportunityListResult>(this.client, this.basePath, this.operations.query, {
+            body,
+            config
+        })
     }
 
-    async get(uuid: string, config?: AxiosRequestConfig): Promise<FundingOpportunity> {
-        return this.client.get<FundingOpportunity>(`${this.basePath}/${uuid}`, undefined, config)
+    async get(uuid: FundingOpportunityPathParams['uuid'], config?: AxiosRequestConfig): Promise<FundingOpportunity> {
+        return invokeOperation<FundingOpportunity>(this.client, this.basePath, this.operations.get, {
+            pathParams: { uuid },
+            config
+        })
     }
 
     async create(payload: FundingOpportunity, config?: AxiosRequestConfig): Promise<FundingOpportunity> {
-        return this.client.put<FundingOpportunity>(this.basePath, payload, undefined, config)
+        return invokeOperation<FundingOpportunity>(this.client, this.basePath, this.operations.create, {
+            body: payload,
+            config
+        })
     }
 
-    async update(uuid: string, payload: FundingOpportunity, config?: AxiosRequestConfig): Promise<FundingOpportunity> {
-        return this.client.put<FundingOpportunity>(`${this.basePath}/${uuid}`, payload, undefined, config)
+    async update(
+        uuid: FundingOpportunityPathParams['uuid'],
+        payload: FundingOpportunity,
+        config?: AxiosRequestConfig
+    ): Promise<FundingOpportunity> {
+        return invokeOperation<FundingOpportunity>(this.client, this.basePath, this.operations.update, {
+            pathParams: { uuid },
+            body: payload,
+            config
+        })
     }
 
-    async remove(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.delete<void>(`${this.basePath}/${uuid}`, undefined, config)
+    async remove(uuid: FundingOpportunityPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+        await invokeOperation<void>(this.client, this.basePath, this.operations.remove, {
+            pathParams: { uuid },
+            config
+        })
     }
 
-    async lock(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.post<void>(`${this.basePath}/${uuid}/actions/lock`, undefined, undefined, config)
+    async lock(uuid: FundingOpportunityPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+        await invokeOperation<void>(this.client, this.basePath, this.operations.lock, {
+            pathParams: { uuid },
+            config
+        })
     }
 
-    async unlock(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.post<void>(`${this.basePath}/${uuid}/actions/unlock`, undefined, undefined, config)
+    async unlock(uuid: FundingOpportunityPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+        await invokeOperation<void>(this.client, this.basePath, this.operations.unlock, {
+            pathParams: { uuid },
+            config
+        })
     }
 
     async listDependents(
-        uuid: string,
+        uuid: FundingOpportunityDependentsPathParams['uuid'],
         params?: FundingOpportunityDependentsParams,
         config?: AxiosRequestConfig
     ): Promise<ContentRefListResult> {
-        return this.client.get<ContentRefListResult>(`${this.basePath}/${uuid}/dependents`, params, config)
+        return invokeOperation<ContentRefListResult>(this.client, this.basePath, this.operations.listDependents, {
+            pathParams: { uuid },
+            query: params,
+            config
+        })
     }
 
-    async getFile(uuid: string, fileId: string, config?: AxiosRequestConfig): Promise<string> {
-        return this.client.get<string>(`${this.basePath}/${uuid}/files/${fileId}`, undefined, config)
+    async getFile(
+        uuid: FundingOpportunityFilePathParams['uuid'],
+        fileId: FundingOpportunityFilePathParams['fileId'],
+        config?: AxiosRequestConfig
+    ): Promise<string> {
+        return invokeOperation<string>(this.client, this.basePath, this.operations.getFile, {
+            pathParams: { uuid, fileId },
+            config
+        })
     }
 
     async uploadFile(file: string, contentType?: string, config?: AxiosRequestConfig): Promise<UploadedFile> {
         const uploadConfig = contentType
             ? {
-                  ...config,
-                  headers: {
-                      ...(config?.headers ?? {}),
-                      'Content-Type': contentType
-                  }
-              }
+                ...config,
+                headers: {
+                    ...(config?.headers ?? {}),
+                    'Content-Type': contentType
+                }
+            }
             : config
 
-        return this.client.put<UploadedFile>(`${this.basePath}/file-uploads`, file, undefined, uploadConfig)
+        return invokeOperation<UploadedFile>(this.client, this.basePath, this.operations.uploadFile, {
+            body: file,
+            config: uploadConfig
+        })
     }
 
-    async listNotes(uuid: string, params?: FundingOpportunityNotesParams, config?: AxiosRequestConfig): Promise<NoteListResult> {
-        return this.client.get<NoteListResult>(`${this.basePath}/${uuid}/notes`, params, config)
+    async listNotes(
+        uuid: FundingOpportunityNotesPathParams['uuid'],
+        params?: FundingOpportunityNotesParams,
+        config?: AxiosRequestConfig
+    ): Promise<NoteListResult> {
+        return invokeOperation<NoteListResult>(this.client, this.basePath, this.operations.listNotes, {
+            pathParams: { uuid },
+            query: params,
+            config
+        })
     }
 
-    async createNote(uuid: string, note: Note, config?: AxiosRequestConfig): Promise<Note> {
-        return this.client.put<Note>(`${this.basePath}/${uuid}/notes`, note, undefined, config)
+    async createNote(
+        uuid: FundingOpportunityNotesPathParams['uuid'],
+        note: Note,
+        config?: AxiosRequestConfig
+    ): Promise<Note> {
+        return invokeOperation<Note>(this.client, this.basePath, this.operations.createNote, {
+            pathParams: { uuid },
+            body: note,
+            config
+        })
     }
 
     async getAllowedAcademicDegreeEligibilityTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-classified-academic-degree-eligibility-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedAcademicDegreeEligibilityTypes,
+            { config }
+        )
     }
 
     async getAllowedEligibilityTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-classified-eligibility-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedEligibilityTypes,
+            { config }
+        )
     }
 
-    async getAllowedCustomDefinedFieldClassifications(propertyName: string, config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(
-            `${this.basePath}/allowed-custom-defined-field-values/${propertyName}/classifications`,
-            undefined,
-            config
+    async getAllowedCustomDefinedFieldClassifications(
+        propertyName: FundingOpportunityCustomFieldPathParams['propertyName'],
+        config?: AxiosRequestConfig
+    ): Promise<ClassificationRefList> {
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedCustomDefinedFieldClassifications,
+            {
+                pathParams: { propertyName },
+                config
+            }
         )
     }
 
     async getAllowedDocumentLicenses(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-document-licenses`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedDocumentLicenses,
+            { config }
+        )
     }
 
     async getAllowedDocumentTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-document-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedDocumentTypes,
+            { config }
+        )
     }
 
     async getAllowedDocumentVersionTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-document-version-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedDocumentVersionTypes,
+            { config }
+        )
     }
 
-    async getAllowedKeywordGroupConfigurations(config?: AxiosRequestConfig): Promise<AllowedKeywordGroupConfigurationList> {
-        return this.client.get<AllowedKeywordGroupConfigurationList>(`${this.basePath}/allowed-keyword-group-configurations`, undefined, config)
+    async getAllowedKeywordGroupConfigurations(
+        config?: AxiosRequestConfig
+    ): Promise<AllowedKeywordGroupConfigurationList> {
+        return invokeOperation<AllowedKeywordGroupConfigurationList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedKeywordGroupConfigurations,
+            { config }
+        )
     }
 
-    async getAllowedKeywordGroupConfigurationClassifications(id: number, config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(
-            `${this.basePath}/allowed-keyword-group-configurations/${id}/classifications`,
-            undefined,
-            config
+    async getAllowedKeywordGroupConfigurationClassifications(
+        id: FundingOpportunityKeywordGroupPathParams['id'],
+        config?: AxiosRequestConfig
+    ): Promise<ClassificationRefList> {
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedKeywordGroupConfigurationClassifications,
+            {
+                pathParams: { id },
+                config
+            }
         )
     }
 
     async getAllowedLocales(config?: AxiosRequestConfig): Promise<LocalesList> {
-        return this.client.get<LocalesList>(`${this.basePath}/allowed-locales`, undefined, config)
+        return invokeOperation<LocalesList>(this.client, this.basePath, this.operations.getAllowedLocales, { config })
     }
 
     async getAllowedNatureTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-nature-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedNatureTypes,
+            { config }
+        )
     }
 
     async getAllowedTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(this.client, this.basePath, this.operations.getAllowedTypes, {
+            config
+        })
     }
 
     async getOrderings(config?: AxiosRequestConfig): Promise<OrderingsList> {
-        return this.client.get<OrderingsList>(`${this.basePath}/orderings`, undefined, config)
+        return invokeOperation<OrderingsList>(this.client, this.basePath, this.operations.getOrderings, { config })
     }
 }

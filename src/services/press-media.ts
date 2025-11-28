@@ -3,6 +3,8 @@ import type { AxiosRequestConfig } from 'axios'
 import type { components, operations } from '../generated/pure'
 import type { PureClient } from '../pure-client'
 
+import { invokeOperation, pressMediaServiceConfig } from './service-config'
+
 export type PressMedia = components['schemas']['PressMedia']
 export type PressMediaListResult = components['schemas']['PressMediaListResult']
 export type PressMediaQuery = components['schemas']['PressMediaQuery']
@@ -19,55 +21,87 @@ export type NoteListResult = components['schemas']['NoteListResult']
 export type PressMediaListParams = NonNullable<operations['pressmedia_list']['parameters']['query']>
 export type PressMediaNotesParams = NonNullable<operations['pressmedia_listNotes']['parameters']['query']>
 
+type PressMediaPathParams = operations['pressmedia_get']['parameters']['path']
+type PressMediaFilePathParams = operations['pressmedia_getFile']['parameters']['path']
+type PressMediaCustomFieldPathParams = operations['pressmedia_getAllowedCustomDefinedFieldClassifications']['parameters']['path']
+type PressMediaKeywordGroupPathParams = operations['pressmedia_getAllowedKeywordGroupConfigurationClassifications']['parameters']['path']
+
 export interface PressMediaServiceOptions {
     basePath?: string
 }
 
 type PureClientLike = Pick<PureClient, 'get' | 'post' | 'put' | 'delete'>
 
-const DEFAULT_BASE_PATH = '/pressmedia'
-
 export class PressMediaService {
     private readonly basePath: string
+    private readonly operations = pressMediaServiceConfig.operations
 
     constructor(private readonly client: PureClientLike, options: PressMediaServiceOptions = {}) {
-        this.basePath = options.basePath ?? DEFAULT_BASE_PATH
+        this.basePath = options.basePath ?? pressMediaServiceConfig.basePath
     }
 
     async list(params?: PressMediaListParams, config?: AxiosRequestConfig): Promise<PressMediaListResult> {
-        return this.client.get<PressMediaListResult>(this.basePath, params, config)
+        return invokeOperation<PressMediaListResult>(this.client, this.basePath, this.operations.list, {
+            query: params,
+            config
+        })
     }
 
     async query(body: PressMediaQuery, config?: AxiosRequestConfig): Promise<PressMediaListResult> {
-        return this.client.post<PressMediaListResult>(`${this.basePath}/search`, body, undefined, config)
+        return invokeOperation<PressMediaListResult>(this.client, this.basePath, this.operations.query, {
+            body,
+            config
+        })
     }
 
-    async get(uuid: string, config?: AxiosRequestConfig): Promise<PressMedia> {
-        return this.client.get<PressMedia>(`${this.basePath}/${uuid}`, undefined, config)
+    async get(uuid: PressMediaPathParams['uuid'], config?: AxiosRequestConfig): Promise<PressMedia> {
+        return invokeOperation<PressMedia>(this.client, this.basePath, this.operations.get, {
+            pathParams: { uuid },
+            config
+        })
     }
 
     async create(payload: PressMedia, config?: AxiosRequestConfig): Promise<PressMedia> {
-        return this.client.put<PressMedia>(this.basePath, payload, undefined, config)
+        return invokeOperation<PressMedia>(this.client, this.basePath, this.operations.create, {
+            body: payload,
+            config
+        })
     }
 
-    async update(uuid: string, payload: PressMedia, config?: AxiosRequestConfig): Promise<PressMedia> {
-        return this.client.put<PressMedia>(`${this.basePath}/${uuid}`, payload, undefined, config)
+    async update(uuid: PressMediaPathParams['uuid'], payload: PressMedia, config?: AxiosRequestConfig): Promise<PressMedia> {
+        return invokeOperation<PressMedia>(this.client, this.basePath, this.operations.update, {
+            pathParams: { uuid },
+            body: payload,
+            config
+        })
     }
 
-    async remove(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.delete<void>(`${this.basePath}/${uuid}`, undefined, config)
+    async remove(uuid: PressMediaPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+        await invokeOperation<void>(this.client, this.basePath, this.operations.remove, {
+            pathParams: { uuid },
+            config
+        })
     }
 
-    async lock(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.post<void>(`${this.basePath}/${uuid}/actions/lock`, undefined, undefined, config)
+    async lock(uuid: PressMediaPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+        await invokeOperation<void>(this.client, this.basePath, this.operations.lock, {
+            pathParams: { uuid },
+            config
+        })
     }
 
-    async unlock(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.post<void>(`${this.basePath}/${uuid}/actions/unlock`, undefined, undefined, config)
+    async unlock(uuid: PressMediaPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+        await invokeOperation<void>(this.client, this.basePath, this.operations.unlock, {
+            pathParams: { uuid },
+            config
+        })
     }
 
-    async getFile(uuid: string, fileId: string, config?: AxiosRequestConfig): Promise<string> {
-        return this.client.get<string>(`${this.basePath}/${uuid}/files/${fileId}`, undefined, config)
+    async getFile(uuid: PressMediaFilePathParams['uuid'], fileId: PressMediaFilePathParams['fileId'], config?: AxiosRequestConfig): Promise<string> {
+        return invokeOperation<string>(this.client, this.basePath, this.operations.getFile, {
+            pathParams: { uuid, fileId },
+            config
+        })
     }
 
     async uploadFile(file: string, contentType?: string, config?: AxiosRequestConfig): Promise<UploadedFile> {
@@ -81,90 +115,180 @@ export class PressMediaService {
               }
             : config
 
-        return this.client.put<UploadedFile>(`${this.basePath}/file-uploads`, file, undefined, uploadConfig)
+        return invokeOperation<UploadedFile>(this.client, this.basePath, this.operations.uploadFile, {
+            body: file,
+            config: uploadConfig
+        })
     }
 
-    async listNotes(uuid: string, params?: PressMediaNotesParams, config?: AxiosRequestConfig): Promise<NoteListResult> {
-        return this.client.get<NoteListResult>(`${this.basePath}/${uuid}/notes`, params, config)
+    async listNotes(
+        uuid: PressMediaPathParams['uuid'],
+        params?: PressMediaNotesParams,
+        config?: AxiosRequestConfig
+    ): Promise<NoteListResult> {
+        return invokeOperation<NoteListResult>(this.client, this.basePath, this.operations.listNotes, {
+            pathParams: { uuid },
+            query: params,
+            config
+        })
     }
 
-    async createNote(uuid: string, note: Note, config?: AxiosRequestConfig): Promise<Note> {
-        return this.client.put<Note>(`${this.basePath}/${uuid}/notes`, note, undefined, config)
+    async createNote(
+        uuid: PressMediaPathParams['uuid'],
+        note: Note,
+        config?: AxiosRequestConfig
+    ): Promise<Note> {
+        return invokeOperation<Note>(this.client, this.basePath, this.operations.createNote, {
+            pathParams: { uuid },
+            body: note,
+            config
+        })
     }
 
     async getAllowedCategories(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-categories`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedCategories,
+            { config }
+        )
     }
 
-    async getAllowedCustomDefinedFieldClassifications(fieldIdentifier: string, config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(
-            `${this.basePath}/allowed-custom-defined-field-values/${fieldIdentifier}/classifications`,
-            undefined,
-            config
+    async getAllowedCustomDefinedFieldClassifications(
+        fieldIdentifier: PressMediaCustomFieldPathParams['fieldIdentifer'],
+        config?: AxiosRequestConfig
+    ): Promise<ClassificationRefList> {
+        // API spec exposes the misspelled token `fieldIdentifer` for this path parameter.
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedCustomDefinedFieldClassifications,
+            {
+                pathParams: { fieldIdentifer: fieldIdentifier },
+                config
+            }
         )
     }
 
     async getAllowedDescriptionsTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-descriptions-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedDescriptionsTypes,
+            { config }
+        )
     }
 
     async getAllowedImageTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-image-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedImageTypes,
+            { config }
+        )
     }
 
     async getAllowedKeywordGroupConfigurations(config?: AxiosRequestConfig): Promise<AllowedKeywordGroupConfigurationList> {
-        return this.client.get<AllowedKeywordGroupConfigurationList>(`${this.basePath}/allowed-keyword-group-configurations`, undefined, config)
+        return invokeOperation<AllowedKeywordGroupConfigurationList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedKeywordGroupConfigurations,
+            { config }
+        )
     }
 
-    async getAllowedKeywordGroupConfigurationClassifications(id: number, config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(
-            `${this.basePath}/allowed-keyword-group-configurations/${id}/classifications`,
-            undefined,
-            config
+    async getAllowedKeywordGroupConfigurationClassifications(
+        id: PressMediaKeywordGroupPathParams['id'],
+        config?: AxiosRequestConfig
+    ): Promise<ClassificationRefList> {
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedKeywordGroupConfigurationClassifications,
+            {
+                pathParams: { id },
+                config
+            }
         )
     }
 
     async getAllowedLocales(config?: AxiosRequestConfig): Promise<LocalesList> {
-        return this.client.get<LocalesList>(`${this.basePath}/allowed-locales`, undefined, config)
+        return invokeOperation<LocalesList>(this.client, this.basePath, this.operations.getAllowedLocales, { config })
     }
 
     async getAllowedMediaCoverageTypes(config?: AxiosRequestConfig): Promise<APIStringListResult> {
-        return this.client.get<APIStringListResult>(`${this.basePath}/allowed-media-coverage-types`, undefined, config)
+        return invokeOperation<APIStringListResult>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedMediaCoverageTypes,
+            { config }
+        )
     }
 
     async getAllowedMediaCoveragesCountries(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-media-coverages-countries`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedMediaCoveragesCountries,
+            { config }
+        )
     }
 
     async getAllowedMediaCoveragesDegreeOfRecognitions(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(
-            `${this.basePath}/allowed-media-coverages-degree-of-recognitions`,
-            undefined,
-            config
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedMediaCoveragesDegreeOfRecognitions,
+            { config }
         )
     }
 
     async getAllowedMediaCoveragesMediaTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-media-coverages-media-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedMediaCoveragesMediaTypes,
+            { config }
+        )
     }
 
     async getAllowedMediaCoveragesPersonsRoles(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-media-coverages-persons-roles`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedMediaCoveragesPersonsRoles,
+            { config }
+        )
     }
 
     async getAllowedMediaCoveragesSubdivisions(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-media-coverages-subdivisions`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedMediaCoveragesSubdivisions,
+            { config }
+        )
     }
 
     async getAllowedTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedTypes,
+            { config }
+        )
     }
 
     async getAllowedWorkflowSteps(config?: AxiosRequestConfig): Promise<WorkflowListResult> {
-        return this.client.get<WorkflowListResult>(`${this.basePath}/allowed-workflow-steps`, undefined, config)
+        return invokeOperation<WorkflowListResult>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedWorkflowSteps,
+            { config }
+        )
     }
 
     async getOrderings(config?: AxiosRequestConfig): Promise<OrderingsList> {
-        return this.client.get<OrderingsList>(`${this.basePath}/orderings`, undefined, config)
+        return invokeOperation<OrderingsList>(this.client, this.basePath, this.operations.getOrderings, { config })
     }
 }

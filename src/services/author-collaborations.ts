@@ -3,6 +3,8 @@ import type { AxiosRequestConfig } from 'axios'
 import type { components, operations } from '../generated/pure'
 import type { PureClient } from '../pure-client'
 
+import { authorCollaborationsServiceConfig, invokeOperation } from './service-config'
+
 export type AuthorCollaboration = components['schemas']['AuthorCollaboration']
 export type AuthorCollaborationListResult = components['schemas']['AuthorCollaborationListResult']
 export type AuthorCollaborationQuery = components['schemas']['AuthorCollaborationQuery']
@@ -15,70 +17,126 @@ export type OrderingsList = components['schemas']['OrderingsList']
 export type AuthorCollaborationListParams = NonNullable<operations['authorCollaboration_list']['parameters']['query']>
 export type AuthorCollaborationNotesParams = NonNullable<operations['authorCollaborations_listNotes']['parameters']['query']>
 
+type AuthorCollaborationPathParams = operations['authorCollaborations_get']['parameters']['path']
+type AuthorCollaborationNotesPathParams = operations['authorCollaborations_listNotes']['parameters']['path']
+
 export interface AuthorCollaborationsServiceOptions {
 	basePath?: string
 }
 
 type PureClientLike = Pick<PureClient, 'get' | 'post' | 'put' | 'delete'>
 
-const DEFAULT_BASE_PATH = '/author-collaborations'
-
 export class AuthorCollaborationsService {
 	private readonly basePath: string
+	private readonly operations = authorCollaborationsServiceConfig.operations
 
 	constructor(private readonly client: PureClientLike, options: AuthorCollaborationsServiceOptions = {}) {
-		this.basePath = options.basePath ?? DEFAULT_BASE_PATH
+		this.basePath = options.basePath ?? authorCollaborationsServiceConfig.basePath
 	}
 
 	async list(params?: AuthorCollaborationListParams, config?: AxiosRequestConfig): Promise<AuthorCollaborationListResult> {
-		return this.client.get<AuthorCollaborationListResult>(this.basePath, params, config)
+		return invokeOperation<AuthorCollaborationListResult>(this.client, this.basePath, this.operations.list, {
+			query: params,
+			config
+		})
 	}
 
 	async query(body: AuthorCollaborationQuery, config?: AxiosRequestConfig): Promise<AuthorCollaborationListResult> {
-		return this.client.post<AuthorCollaborationListResult>(`${this.basePath}/search`, body, undefined, config)
+		return invokeOperation<AuthorCollaborationListResult>(this.client, this.basePath, this.operations.query, {
+			body,
+			config
+		})
 	}
 
-	async get(uuid: string, config?: AxiosRequestConfig): Promise<AuthorCollaboration> {
-		return this.client.get<AuthorCollaboration>(`${this.basePath}/${uuid}`, undefined, config)
+	async get(uuid: AuthorCollaborationPathParams['uuid'], config?: AxiosRequestConfig): Promise<AuthorCollaboration> {
+		return invokeOperation<AuthorCollaboration>(this.client, this.basePath, this.operations.get, {
+			pathParams: { uuid },
+			config
+		})
 	}
 
 	async create(payload: AuthorCollaboration, config?: AxiosRequestConfig): Promise<AuthorCollaboration> {
-		return this.client.put<AuthorCollaboration>(this.basePath, payload, undefined, config)
+		return invokeOperation<AuthorCollaboration>(this.client, this.basePath, this.operations.create, {
+			body: payload,
+			config
+		})
 	}
 
-	async update(uuid: string, payload: AuthorCollaboration, config?: AxiosRequestConfig): Promise<AuthorCollaboration> {
-		return this.client.put<AuthorCollaboration>(`${this.basePath}/${uuid}`, payload, undefined, config)
+	async update(
+		uuid: AuthorCollaborationPathParams['uuid'],
+		payload: AuthorCollaboration,
+		config?: AxiosRequestConfig
+	): Promise<AuthorCollaboration> {
+		return invokeOperation<AuthorCollaboration>(this.client, this.basePath, this.operations.update, {
+			pathParams: { uuid },
+			body: payload,
+			config
+		})
 	}
 
-	async remove(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-		await this.client.delete<void>(`${this.basePath}/${uuid}`, undefined, config)
+	async remove(uuid: AuthorCollaborationPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+		await invokeOperation<void>(this.client, this.basePath, this.operations.remove, {
+			pathParams: { uuid },
+			config
+		})
 	}
 
-	async lock(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-		await this.client.post<void>(`${this.basePath}/${uuid}/actions/lock`, undefined, undefined, config)
+	async lock(uuid: AuthorCollaborationPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+		await invokeOperation<void>(this.client, this.basePath, this.operations.lock, {
+			pathParams: { uuid },
+			config
+		})
 	}
 
-	async unlock(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-		await this.client.post<void>(`${this.basePath}/${uuid}/actions/unlock`, undefined, undefined, config)
+	async unlock(uuid: AuthorCollaborationPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+		await invokeOperation<void>(this.client, this.basePath, this.operations.unlock, {
+			pathParams: { uuid },
+			config
+		})
 	}
 
-	async listNotes(uuid: string, params?: AuthorCollaborationNotesParams, config?: AxiosRequestConfig): Promise<NoteListResult> {
-		return this.client.get<NoteListResult>(`${this.basePath}/${uuid}/notes`, params, config)
+	async listNotes(
+		uuid: AuthorCollaborationNotesPathParams['uuid'],
+		params?: AuthorCollaborationNotesParams,
+		config?: AxiosRequestConfig
+	): Promise<NoteListResult> {
+		return invokeOperation<NoteListResult>(this.client, this.basePath, this.operations.listNotes, {
+			pathParams: { uuid },
+			query: params,
+			config
+		})
 	}
 
-	async createNote(uuid: string, note: Note, config?: AxiosRequestConfig): Promise<Note> {
-		return this.client.put<Note>(`${this.basePath}/${uuid}/notes`, note, undefined, config)
+	async createNote(
+		uuid: AuthorCollaborationNotesPathParams['uuid'],
+		note: Note,
+		config?: AxiosRequestConfig
+	): Promise<Note> {
+		return invokeOperation<Note>(this.client, this.basePath, this.operations.createNote, {
+			pathParams: { uuid },
+			body: note,
+			config
+		})
 	}
 
 	async getAllowedLocales(config?: AxiosRequestConfig): Promise<LocalesList> {
-		return this.client.get<LocalesList>(`${this.basePath}/allowed-locales`, undefined, config)
+		return invokeOperation<LocalesList>(this.client, this.basePath, this.operations.getAllowedLocales, {
+			config
+		})
 	}
 
 	async getAllowedWorkflowSteps(config?: AxiosRequestConfig): Promise<WorkflowListResult> {
-		return this.client.get<WorkflowListResult>(`${this.basePath}/allowed-workflow-steps`, undefined, config)
+		return invokeOperation<WorkflowListResult>(
+			this.client,
+			this.basePath,
+			this.operations.getAllowedWorkflowSteps,
+			{ config }
+		)
 	}
 
 	async getOrderings(config?: AxiosRequestConfig): Promise<OrderingsList> {
-		return this.client.get<OrderingsList>(`${this.basePath}/orderings`, undefined, config)
+		return invokeOperation<OrderingsList>(this.client, this.basePath, this.operations.getOrderings, {
+			config
+		})
 	}
 }

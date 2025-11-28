@@ -3,6 +3,8 @@ import type { AxiosRequestConfig } from 'axios'
 import type { components, operations } from '../generated/pure'
 import type { PureClient } from '../pure-client'
 
+import { dataSetsServiceConfig, invokeOperation } from './service-config'
+
 export type DataSet = components['schemas']['DataSet']
 export type DataSetListResult = components['schemas']['DataSetListResult']
 export type DataSetsQuery = components['schemas']['DataSetsQuery']
@@ -17,55 +19,92 @@ export type UploadedFile = components['schemas']['UploadedFile']
 export type DataSetListParams = NonNullable<operations['dataSet_list']['parameters']['query']>
 export type DataSetNotesParams = NonNullable<operations['dataSet_listNotes']['parameters']['query']>
 
+type DataSetPathParams = operations['dataSet_get']['parameters']['path']
+type DataSetNotesPathParams = operations['dataSet_listNotes']['parameters']['path']
+type DataSetFilePathParams = operations['dataSet_getFile']['parameters']['path']
+type DataSetCustomFieldPathParams = operations['dataSet_getAllowedCustomDefinedFieldClassifications']['parameters']['path']
+type DataSetKeywordGroupPathParams = operations['dataSet_getAllowedKeywordGroupConfigurationClassifications']['parameters']['path']
+
 export interface DataSetsServiceOptions {
     basePath?: string
 }
 
 type PureClientLike = Pick<PureClient, 'get' | 'post' | 'put' | 'delete'>
 
-const DEFAULT_BASE_PATH = '/data-sets'
-
 export class DataSetsService {
     private readonly basePath: string
+    private readonly operations = dataSetsServiceConfig.operations
 
     constructor(private readonly client: PureClientLike, options: DataSetsServiceOptions = {}) {
-        this.basePath = options.basePath ?? DEFAULT_BASE_PATH
+        this.basePath = options.basePath ?? dataSetsServiceConfig.basePath
     }
 
     async list(params?: DataSetListParams, config?: AxiosRequestConfig): Promise<DataSetListResult> {
-        return this.client.get<DataSetListResult>(this.basePath, params, config)
+        return invokeOperation<DataSetListResult>(this.client, this.basePath, this.operations.list, {
+            query: params,
+            config
+        })
     }
 
     async query(body: DataSetsQuery, config?: AxiosRequestConfig): Promise<DataSetListResult> {
-        return this.client.post<DataSetListResult>(`${this.basePath}/search`, body, undefined, config)
+        return invokeOperation<DataSetListResult>(this.client, this.basePath, this.operations.query, {
+            body,
+            config
+        })
     }
 
-    async get(uuid: string, config?: AxiosRequestConfig): Promise<DataSet> {
-        return this.client.get<DataSet>(`${this.basePath}/${uuid}`, undefined, config)
+    async get(uuid: DataSetPathParams['uuid'], config?: AxiosRequestConfig): Promise<DataSet> {
+        return invokeOperation<DataSet>(this.client, this.basePath, this.operations.get, {
+            pathParams: { uuid },
+            config
+        })
     }
 
     async create(payload: DataSet, config?: AxiosRequestConfig): Promise<DataSet> {
-        return this.client.put<DataSet>(this.basePath, payload, undefined, config)
+        return invokeOperation<DataSet>(this.client, this.basePath, this.operations.create, {
+            body: payload,
+            config
+        })
     }
 
-    async update(uuid: string, payload: DataSet, config?: AxiosRequestConfig): Promise<DataSet> {
-        return this.client.put<DataSet>(`${this.basePath}/${uuid}`, payload, undefined, config)
+    async update(uuid: DataSetPathParams['uuid'], payload: DataSet, config?: AxiosRequestConfig): Promise<DataSet> {
+        return invokeOperation<DataSet>(this.client, this.basePath, this.operations.update, {
+            pathParams: { uuid },
+            body: payload,
+            config
+        })
     }
 
-    async remove(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.delete<void>(`${this.basePath}/${uuid}`, undefined, config)
+    async remove(uuid: DataSetPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+        await invokeOperation<void>(this.client, this.basePath, this.operations.remove, {
+            pathParams: { uuid },
+            config
+        })
     }
 
-    async lock(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.post<void>(`${this.basePath}/${uuid}/actions/lock`, undefined, undefined, config)
+    async lock(uuid: DataSetPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+        await invokeOperation<void>(this.client, this.basePath, this.operations.lock, {
+            pathParams: { uuid },
+            config
+        })
     }
 
-    async unlock(uuid: string, config?: AxiosRequestConfig): Promise<void> {
-        await this.client.post<void>(`${this.basePath}/${uuid}/actions/unlock`, undefined, undefined, config)
+    async unlock(uuid: DataSetPathParams['uuid'], config?: AxiosRequestConfig): Promise<void> {
+        await invokeOperation<void>(this.client, this.basePath, this.operations.unlock, {
+            pathParams: { uuid },
+            config
+        })
     }
 
-    async getFile(uuid: string, fileId: string, config?: AxiosRequestConfig): Promise<string> {
-        return this.client.get<string>(`${this.basePath}/${uuid}/files/${fileId}`, undefined, config)
+    async getFile(
+        uuid: DataSetFilePathParams['uuid'],
+        fileId: DataSetFilePathParams['fileId'],
+        config?: AxiosRequestConfig
+    ): Promise<string> {
+        return invokeOperation<string>(this.client, this.basePath, this.operations.getFile, {
+            pathParams: { uuid, fileId },
+            config
+        })
     }
 
     async uploadFile(file: string, contentType?: string, config?: AxiosRequestConfig): Promise<UploadedFile> {
@@ -79,118 +118,236 @@ export class DataSetsService {
               }
             : config
 
-        return this.client.put<UploadedFile>(`${this.basePath}/file-uploads`, file, undefined, uploadConfig)
+        return invokeOperation<UploadedFile>(this.client, this.basePath, this.operations.uploadFile, {
+            body: file,
+            config: uploadConfig
+        })
     }
 
-    async listNotes(uuid: string, params?: DataSetNotesParams, config?: AxiosRequestConfig): Promise<NoteListResult> {
-        return this.client.get<NoteListResult>(`${this.basePath}/${uuid}/notes`, params, config)
+    async listNotes(
+        uuid: DataSetNotesPathParams['uuid'],
+        params?: DataSetNotesParams,
+        config?: AxiosRequestConfig
+    ): Promise<NoteListResult> {
+        return invokeOperation<NoteListResult>(this.client, this.basePath, this.operations.listNotes, {
+            pathParams: { uuid },
+            query: params,
+            config
+        })
     }
 
-    async createNote(uuid: string, note: Note, config?: AxiosRequestConfig): Promise<Note> {
-        return this.client.put<Note>(`${this.basePath}/${uuid}/notes`, note, undefined, config)
+    async createNote(
+        uuid: DataSetNotesPathParams['uuid'],
+        note: Note,
+        config?: AxiosRequestConfig
+    ): Promise<Note> {
+        return invokeOperation<Note>(this.client, this.basePath, this.operations.createNote, {
+            pathParams: { uuid },
+            body: note,
+            config
+        })
     }
 
     async getAllowedClassifiedIdentifierTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-classified-identifier-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedClassifiedIdentifierTypes,
+            { config }
+        )
     }
 
     async getAllowedContributorsRoles(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-contributors-roles`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedContributorsRoles,
+            { config }
+        )
     }
 
     async getAllowedCustomDefinedFieldClassifications(
-        propertyName: string,
+        propertyName: DataSetCustomFieldPathParams['propertyName'],
         config?: AxiosRequestConfig
     ): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(
-            `${this.basePath}/allowed-custom-defined-field-values/${propertyName}/classifications`,
-            undefined,
-            config
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedCustomDefinedFieldClassifications,
+            {
+                pathParams: { propertyName },
+                config
+            }
         )
     }
 
     async getAllowedDescriptionTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-description-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedDescriptionTypes,
+            { config }
+        )
     }
 
     async getAllowedDocumentLicenses(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-document-licenses`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedDocumentLicenses,
+            { config }
+        )
     }
 
     async getAllowedDocumentTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-document-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedDocumentTypes,
+            { config }
+        )
     }
 
     async getAllowedDoiAccessTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-doi-access-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedDoiAccessTypes,
+            { config }
+        )
     }
 
     async getAllowedDoiLicenseTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-doi-license-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedDoiLicenseTypes,
+            { config }
+        )
     }
 
     async getAllowedImageTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-image-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedImageTypes,
+            { config }
+        )
     }
 
     async getAllowedKeywordGroupConfigurations(
         config?: AxiosRequestConfig
     ): Promise<AllowedKeywordGroupConfigurationList> {
-        return this.client.get<AllowedKeywordGroupConfigurationList>(
-            `${this.basePath}/allowed-keyword-group-configurations`,
-            undefined,
-            config
+        return invokeOperation<AllowedKeywordGroupConfigurationList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedKeywordGroupConfigurations,
+            { config }
         )
     }
 
     async getAllowedKeywordGroupConfigurationClassifications(
-        id: number,
+        id: DataSetKeywordGroupPathParams['id'],
         config?: AxiosRequestConfig
     ): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(
-            `${this.basePath}/allowed-keyword-group-configurations/${id}/classifications`,
-            undefined,
-            config
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedKeywordGroupConfigurationClassifications,
+            {
+                pathParams: { id },
+                config
+            }
         )
     }
 
     async getAllowedLegalConditionTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-legal-condition-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedLegalConditionTypes,
+            { config }
+        )
     }
 
     async getAllowedLicenses(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-licenses`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedLicenses,
+            { config }
+        )
     }
 
     async getAllowedLinkTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-link-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedLinkTypes,
+            { config }
+        )
     }
 
     async getAllowedLocales(config?: AxiosRequestConfig): Promise<LocalesList> {
-        return this.client.get<LocalesList>(`${this.basePath}/allowed-locales`, undefined, config)
+        return invokeOperation<LocalesList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedLocales,
+            { config }
+        )
     }
 
     async getAllowedNatureTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-nature-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedNatureTypes,
+            { config }
+        )
     }
 
     async getAllowedOpenAccessPermissions(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-open-access-permissions`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedOpenAccessPermissions,
+            { config }
+        )
     }
 
     async getAllowedPersonsRoles(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-persons-roles`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedPersonsRoles,
+            { config }
+        )
     }
 
     async getAllowedPhysicalDataTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-physical-data-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedPhysicalDataTypes,
+            { config }
+        )
     }
 
     async getAllowedTypes(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-types`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedTypes,
+            { config }
+        )
     }
 
     async getAllowedWorkflowSteps(config?: AxiosRequestConfig): Promise<WorkflowListResult> {
-        return this.client.get<WorkflowListResult>(`${this.basePath}/allowed-workflow-steps`, undefined, config)
+        return invokeOperation<WorkflowListResult>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedWorkflowSteps,
+            { config }
+        )
     }
 }

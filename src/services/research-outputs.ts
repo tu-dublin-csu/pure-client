@@ -3,6 +3,8 @@ import type { AxiosRequestConfig } from 'axios'
 import type { components, paths } from '../generated/pure'
 import type { PureClient } from '../pure-client'
 
+import { invokeOperation, researchOutputsServiceConfig } from './service-config'
+
 export type ResearchOutput = components['schemas']['ResearchOutput']
 export type ResearchOutputListResult = components['schemas']['ResearchOutputListResult']
 export type ResearchOutputsQuery = components['schemas']['ResearchOutputsQuery']
@@ -25,41 +27,52 @@ export interface ResearchOutputsServiceOptions {
 
 type PureClientLike = Pick<PureClient, 'get' | 'post' | 'put' | 'delete'>
 
-const DEFAULT_BASE_PATH = '/research-outputs'
-
 export class ResearchOutputsService {
     private readonly basePath: string
+    private readonly operations = researchOutputsServiceConfig.operations
 
     constructor(private readonly client: PureClientLike, options: ResearchOutputsServiceOptions = {}) {
-        this.basePath = options.basePath ?? DEFAULT_BASE_PATH
+        this.basePath = options.basePath ?? researchOutputsServiceConfig.basePath
     }
 
     async list(
         params?: ResearchOutputListParams,
         config?: AxiosRequestConfig
     ): Promise<ResearchOutputListResult> {
-        return this.client.get<ResearchOutputListResult>(this.basePath, params, config)
+        return invokeOperation<ResearchOutputListResult>(this.client, this.basePath, this.operations.list, {
+            query: params,
+            config
+        })
     }
 
     async query(
         body: ResearchOutputsQuery,
         config?: AxiosRequestConfig
     ): Promise<ResearchOutputListResult> {
-        return this.client.post<ResearchOutputListResult>(`${this.basePath}/search`, body, undefined, config)
+        return invokeOperation<ResearchOutputListResult>(this.client, this.basePath, this.operations.query, {
+            body,
+            config
+        })
     }
 
     async get(
         uuid: ResearchOutputGetParams['uuid'],
         config?: AxiosRequestConfig
     ): Promise<ResearchOutput> {
-        return this.client.get<ResearchOutput>(`${this.basePath}/${uuid}`, undefined, config)
+        return invokeOperation<ResearchOutput>(this.client, this.basePath, this.operations.get, {
+            pathParams: { uuid },
+            config
+        })
     }
 
     async create(
         payload: ResearchOutput,
         config?: AxiosRequestConfig
     ): Promise<ResearchOutput> {
-        return this.client.put<ResearchOutput>(this.basePath, payload, undefined, config)
+        return invokeOperation<ResearchOutput>(this.client, this.basePath, this.operations.create, {
+            body: payload,
+            config
+        })
     }
 
     async update(
@@ -67,21 +80,33 @@ export class ResearchOutputsService {
         payload: ResearchOutput,
         config?: AxiosRequestConfig
     ): Promise<ResearchOutput> {
-        return this.client.put<ResearchOutput>(`${this.basePath}/${uuid}`, payload, undefined, config)
+        return invokeOperation<ResearchOutput>(this.client, this.basePath, this.operations.update, {
+            pathParams: { uuid },
+            body: payload,
+            config
+        })
     }
 
     async remove(
         uuid: ResearchOutputDeleteParams['uuid'],
         config?: AxiosRequestConfig
     ): Promise<void> {
-        await this.client.delete<void>(`${this.basePath}/${uuid}`, undefined, config)
+        await invokeOperation<void>(this.client, this.basePath, this.operations.remove, {
+            pathParams: { uuid },
+            config
+        })
     }
 
     async getAllowedCategories(config?: AxiosRequestConfig): Promise<ClassificationRefList> {
-        return this.client.get<ClassificationRefList>(`${this.basePath}/allowed-categories`, undefined, config)
+        return invokeOperation<ClassificationRefList>(
+            this.client,
+            this.basePath,
+            this.operations.getAllowedCategories,
+            { config }
+        )
     }
 
     async getOrderings(config?: AxiosRequestConfig): Promise<OrderingsList> {
-        return this.client.get<OrderingsList>(`${this.basePath}/orderings`, undefined, config)
+        return invokeOperation<OrderingsList>(this.client, this.basePath, this.operations.getOrderings, { config })
     }
 }

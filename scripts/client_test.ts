@@ -3,11 +3,11 @@ import 'dotenv/config'
 import { PureClient, PersonsService, RolesService, ThesauriService } from '../src'
 
 type Listable = {
-	list: (params?: unknown) => Promise<unknown>
+	list: (...args: any[]) => Promise<unknown>
 }
 
 type Gettable = {
-	get?: (identifier: string) => Promise<unknown>
+	get?: (...args: any[]) => Promise<unknown>
 }
 
 type ServiceInstance = Listable & Gettable

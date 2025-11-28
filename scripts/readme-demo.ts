@@ -5,19 +5,26 @@ import {
     ThesauriService,
     OrganizationsService,
     AwardsService
-} from '../src/index.ts'
+} from '../src'
 import type { paths } from '../src/generated/pure'
 
-const { PURE_URL, PURE_API_KEY } = process.env
+const pureUrl = process.env.PURE_URL
+const pureApiKey = process.env.PURE_API_KEY
 
-if (!PURE_URL || !PURE_API_KEY) {
-    throw new Error('Set PURE_URL and PURE_API_KEY before running this script')
+function ensurePureEnv(): { url: string; apiKey: string } {
+    if (!pureUrl || !pureApiKey) {
+        throw new Error('Set PURE_URL and PURE_API_KEY before running this script')
+    }
+
+    return { url: pureUrl, apiKey: pureApiKey }
 }
 
-async function main() {
-    console.log(`Connecting to PURE at ${PURE_URL}`)
+const { url: resolvedPureUrl, apiKey: resolvedPureApiKey } = ensurePureEnv()
 
-    const client = new PureClient(PURE_URL, PURE_API_KEY)
+async function main() {
+    console.log(`Connecting to PURE at ${resolvedPureUrl}`)
+
+    const client = new PureClient(resolvedPureUrl, resolvedPureApiKey)
     const rolesService = new RolesService(client)
     const personsService = new PersonsService(client)
     const thesauriService = new ThesauriService(client)
@@ -30,8 +37,8 @@ async function main() {
     await runExample('ThesauriService list/get', () => showThesauri(thesauriService))
     await runExample('Direct PureClient (unsupported endpoint)', () => showUnsupportedEndpoint(client))
     await runExample('Person → Organization → Awards chain', () =>
-		showPersonOrganizationAwardChain(personsService, organizationsService, awardsService)
-	)
+        showPersonOrganizationAwardChain(personsService, organizationsService, awardsService)
+    )
 }
 
 async function runExample(label: string, fn: () => Promise<void>) {
@@ -72,8 +79,7 @@ async function showPersonsList(personsService: PersonsService) {
     }
 
     people.items.forEach(person => {
-        const label = person.name?.formatted?.text ?? person.uuid ?? 'unknown person'
-        console.log(`Person (list): ${label}`)
+        console.log(`Person (list): ${formatSimplePersonName(person)}`)
     })
 }
 
@@ -87,8 +93,7 @@ async function showPersonsQuery(personsService: PersonsService) {
     }
 
     result.items.forEach(person => {
-        const label = person.name?.formatted?.text ?? person.uuid ?? 'unknown person'
-        console.log(`Person (query): ${label}`)
+        console.log(`Person (query): ${formatSimplePersonName(person)}`)
     })
 }
 
@@ -118,7 +123,9 @@ async function showUnsupportedEndpoint(client: PureClient) {
         '/external-organizations/allowed-document-licenses'
     )
 
-    const classifications = licenses?.classifications ?? []
+    const classifications = (licenses?.classifications ?? []).filter(
+        (classification): classification is NonNullable<typeof classification> => classification !== null
+    )
 
     if (!classifications.length) {
         console.log('No document licenses returned by the API')
@@ -126,9 +133,8 @@ async function showUnsupportedEndpoint(client: PureClient) {
     }
 
     classifications.slice(0, 5).forEach(classification => {
-        console.log(
-            `License: ${classification.uri ?? 'unknown'} (${classification.name?.text ?? 'no display name'})`
-        )
+        const label = formatLocalized(classification.term) ?? 'no display name'
+        console.log(`License: ${classification.uri ?? 'unknown'} (${label})`)
     })
 }
 
@@ -139,7 +145,9 @@ async function showPersonOrganizationAwardChain(
 ) {
     const personWindow = Number(process.env.DEMO_PERSON_WINDOW ?? 10)
     const list = await personsService.list({ size: personWindow })
-    const candidates = list.items?.filter(item => item?.uuid) ?? []
+    const candidates = (list.items ?? []).filter(
+        (item): item is NonNullable<typeof item> => Boolean(item?.uuid)
+    )
 
     if (!candidates.length) {
         console.log('No persons returned by the API')
@@ -152,7 +160,10 @@ async function showPersonOrganizationAwardChain(
         }
 
         const person = await personsService.get(candidate.uuid)
-        const staffAssociations = person.staffOrganizationAssociations?.filter(assoc => assoc?.organization?.uuid) ?? []
+        const staffAssociations = (person.staffOrganizationAssociations ?? []).filter(
+            (assoc): assoc is NonNullable<typeof assoc> =>
+                Boolean((assoc as { organization?: { uuid?: string | null } | null })?.organization?.uuid)
+        )
 
         if (!staffAssociations.length) {
             continue
@@ -161,13 +172,17 @@ async function showPersonOrganizationAwardChain(
         console.log(`Selected person: ${formatPersonName(person)} (${person.uuid})`)
 
         for (const association of staffAssociations.slice(0, Number(process.env.DEMO_MAX_ORGS ?? 2))) {
-            const orgRef = association.organization
+            const associationDetails = association as {
+                organization?: { uuid?: string | null }
+                primaryAssociation?: boolean | null
+            }
+            const orgRef = associationDetails.organization
 
             if (!orgRef?.uuid) {
                 continue
             }
 
-            const primaryLabel = association.primaryAssociation ? 'primary' : 'secondary'
+            const primaryLabel = associationDetails.primaryAssociation ? 'primary' : 'secondary'
             console.log(
                 `  → Staff association (${primaryLabel}): ${formatRefLabel(orgRef)} (${orgRef.uuid})`
             )
@@ -176,7 +191,9 @@ async function showPersonOrganizationAwardChain(
             console.log(`     Organization name: ${formatLocalized(organization.name) ?? 'n/a'}`)
 
             const dependents = await organizationsService.listDependents(orgRef.uuid, { verbose: true })
-            const awardRefs = (dependents.items ?? []).filter(ref => ref.systemName === 'Award' && ref.uuid)
+            const awardRefs = (dependents.items ?? []).filter(
+                (ref): ref is NonNullable<typeof ref> => ref?.systemName === 'Award' && Boolean(ref?.uuid)
+            )
 
             if (!awardRefs.length) {
                 console.log('     No awards registered against this organization')
@@ -201,22 +218,49 @@ async function showPersonOrganizationAwardChain(
     console.log('No staff organization associations found in the sampled persons')
 }
 
+type PersonNameLike = {
+    name?: {
+        firstName?: string | null
+        lastName?: string | null
+    } | null
+    uuid?: string | null
+}
+
+function formatSimplePersonName(person: PersonNameLike): string {
+    const firstName = person.name?.firstName?.trim() ?? ''
+    const lastName = person.name?.lastName?.trim() ?? ''
+    const fullName = `${firstName} ${lastName}`.trim()
+    return fullName || person.uuid || 'Unknown person'
+}
+
 function formatPersonName(person: Awaited<ReturnType<PersonsService['get']>>): string {
-    return (
-        person.name?.formatted?.text ??
-        person.name?.preferred?.text ??
-        person.name?.firstName ??
-        person.uuid ??
-        'Unknown person'
-    )
+    return formatSimplePersonName(person)
 }
 
-function formatRefLabel(ref: { name?: { text?: string | null } | null }): string {
-    return ref.name?.text ?? 'Unnamed organization'
+function formatRefLabel(ref: { uuid?: string | null }): string {
+    return ref.uuid ?? 'Unnamed organization'
 }
 
-function formatLocalized(value?: { text?: string | null } | null): string | undefined {
-    return value?.text ?? undefined
+type LocalizedLike = { text?: string | null } | Record<string, string | null> | null | undefined
+
+function formatLocalized(value: LocalizedLike): string | undefined {
+    if (!value) {
+        return undefined
+    }
+
+    if (typeof value === 'object' && !Array.isArray(value)) {
+        if ('text' in value) {
+            const textual = value as { text?: string | null }
+            return textual.text ?? undefined
+        }
+
+        const values = Object.values(value as Record<string, string | null>).filter(
+            (entry): entry is string => typeof entry === 'string' && entry.length > 0
+        )
+        return values[0]
+    }
+
+    return undefined
 }
 
 main().catch(error => {

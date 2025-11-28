@@ -3,6 +3,8 @@ import type { AxiosRequestConfig } from 'axios'
 import type { components, operations } from '../generated/pure'
 import type { PureClient } from '../pure-client'
 
+import { invokeOperation, thesauriServiceConfig } from './service-config'
+
 export type Thesaurus = components['schemas']['Thesaurus']
 export type ThesaurusListResult = components['schemas']['ThesaurusListResult']
 export type ThesaurusQuery = components['schemas']['ThesaurusQuery']
@@ -15,34 +17,42 @@ export interface ThesauriServiceOptions {
     basePath?: string
 }
 
-type PureClientLike = Pick<PureClient, 'get' | 'post'>
-
-const DEFAULT_BASE_PATH = '/thesauri'
+type PureClientLike = Pick<PureClient, 'get' | 'post' | 'put' | 'delete'>
 
 export class ThesauriService {
     private readonly basePath: string
+    private readonly operations = thesauriServiceConfig.operations
 
     constructor(private readonly client: PureClientLike, options: ThesauriServiceOptions = {}) {
-        this.basePath = options.basePath ?? DEFAULT_BASE_PATH
+        this.basePath = options.basePath ?? thesauriServiceConfig.basePath
     }
 
     async list(params?: ThesaurusListParams, config?: AxiosRequestConfig): Promise<ThesaurusListResult> {
-        return this.client.get<ThesaurusListResult>(this.basePath, params, config)
+        return invokeOperation<ThesaurusListResult>(this.client, this.basePath, this.operations.list, {
+            query: params,
+            config
+        })
     }
 
     async query(body: ThesaurusQuery, config?: AxiosRequestConfig): Promise<ThesaurusListResult> {
-        return this.client.post<ThesaurusListResult>(`${this.basePath}/search`, body, undefined, config)
+        return invokeOperation<ThesaurusListResult>(this.client, this.basePath, this.operations.query, {
+            body,
+            config
+        })
     }
 
     async get(uuid: string, config?: AxiosRequestConfig): Promise<Thesaurus> {
-        return this.client.get<Thesaurus>(`${this.basePath}/${uuid}`, undefined, config)
+        return invokeOperation<Thesaurus>(this.client, this.basePath, this.operations.get, {
+            pathParams: { uuid },
+            config
+        })
     }
 
     async getAllowedLocales(config?: AxiosRequestConfig): Promise<LocalesList> {
-        return this.client.get<LocalesList>(`${this.basePath}/allowed-locales`, undefined, config)
+        return invokeOperation<LocalesList>(this.client, this.basePath, this.operations.getAllowedLocales, { config })
     }
 
     async getOrderings(config?: AxiosRequestConfig): Promise<OrderingsList> {
-        return this.client.get<OrderingsList>(`${this.basePath}/orderings`, undefined, config)
+        return invokeOperation<OrderingsList>(this.client, this.basePath, this.operations.getOrderings, { config })
     }
 }
