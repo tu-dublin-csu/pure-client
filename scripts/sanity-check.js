@@ -59,11 +59,17 @@ async function main() {
     const service = createService(domain, client)
 
     if (command === 'get') {
-        if (!arg) {
-            throw new Error('Missing UUID argument for the get command')
+        const identifier = arg ?? (await resolveIdentifier(domain, service))
+
+        if (!identifier) {
+            throw new Error('Unable to resolve a UUID for the get command; pass one explicitly')
         }
 
-        const item = await service.get(arg)
+        if (!arg) {
+            console.info(`Resolved ${domain} identifier via list lookup: ${identifier}`)
+        }
+
+        const item = await service.get(identifier)
         console.log(JSON.stringify(item, null, 2))
         return
     }
@@ -252,20 +258,8 @@ function createService(domain, client) {
 }
 
 function logListResult(domain, result, limit) {
-    if (Array.isArray(result)) {
-        console.log(`Fetched ${result.length} ${domain} (reported count: ${result.length})`)
-
-        result.slice(0, limit).forEach((item, index) => {
-            const summary = summariseItem(item)
-            console.log(`${index + 1}. ${summary}`)
-        })
-
-        return
-    }
-
-    const list = result && typeof result === 'object' ? result : {}
-    const items = Array.isArray(list.items) ? list.items : []
-    const total = typeof list.count === 'number' ? list.count : items.length
+    const items = coerceItems(result)
+    const total = extractTotal(result, items.length)
 
     console.log(`Fetched ${items.length} ${domain} (reported count: ${total})`)
 
@@ -346,6 +340,76 @@ async function ensureBuildArtifacts() {
         console.error('Failed to build the client; aborting sanity check.')
         process.exit(result.status ?? 1)
     }
+}
+
+async function resolveIdentifier(domain, service) {
+    if (typeof service.list !== 'function') {
+        return undefined
+    }
+
+    try {
+        const result = await service.list({ size: 1 })
+        const identifier = extractFirstUuid(result)
+        if (identifier) {
+            return identifier
+        }
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error)
+        console.warn(`Failed to derive ${domain} identifier from list: ${message}`)
+    }
+
+    try {
+        const fallbackResult = await service.list()
+        return extractFirstUuid(fallbackResult)
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error)
+        console.warn(`Fallback list lookup for ${domain} also failed: ${message}`)
+        return undefined
+    }
+}
+
+function coerceItems(result) {
+    if (Array.isArray(result)) {
+        return result
+    }
+
+    if (result && typeof result === 'object' && Array.isArray(result.items)) {
+        return result.items
+    }
+
+    return []
+}
+
+function extractTotal(result, fallback) {
+    if (Array.isArray(result)) {
+        return result.length
+    }
+
+    if (result && typeof result === 'object' && typeof result.count === 'number') {
+        return result.count
+    }
+
+    return fallback
+}
+
+function extractUuid(item) {
+    if (item && typeof item === 'object' && typeof item.uuid === 'string') {
+        return item.uuid
+    }
+
+    return undefined
+}
+
+function extractFirstUuid(result) {
+    const items = coerceItems(result)
+    for (const item of items) {
+        const uuid = extractUuid(item)
+        if (uuid) {
+            return uuid
+        }
+    }
+
+    return undefined
 }
 
 main().catch(error => {

@@ -25,7 +25,8 @@ import {
     type NoteListResult,
     type ProjectDependentsParams,
     type ProjectAllowedDisciplinesParams,
-    type ProjectNotesParams
+    type ProjectNotesParams,
+    type UploadedFile
 } from '../../src/services/projects'
 
 type PureClientLike = Pick<PureClient, 'get' | 'post' | 'put' | 'delete'>
@@ -248,6 +249,28 @@ describe('ProjectsService', () => {
         client.put.mockResolvedValueOnce(note)
         expect(await service.createNote(uuid, note)).toBe(note)
         expect(client.put).toHaveBeenCalledWith(`${basePath}/${uuid}/notes`, note, undefined, undefined)
+    })
+
+    it('fetches and uploads files', async () => {
+        const file = 'binary'
+        const uploaded = { id: '1' } as unknown as UploadedFile
+
+        client.get.mockResolvedValueOnce(file)
+        client.put.mockResolvedValueOnce(uploaded)
+
+        expect(await service.getFile('uuid', 'file')).toBe(file)
+        expect(client.get).toHaveBeenCalledWith(`${basePath}/uuid/files/file`, undefined, undefined)
+
+        expect(await service.uploadFile('payload', 'text/plain', { timeout: 1 })).toBe(uploaded)
+        expect(client.put).toHaveBeenCalledWith(
+            `${basePath}/file-uploads`,
+            'payload',
+            undefined,
+            expect.objectContaining({
+                headers: expect.objectContaining({ 'Content-Type': 'text/plain' }),
+                timeout: 1
+            })
+        )
     })
 
     it('supports custom base path', async () => {

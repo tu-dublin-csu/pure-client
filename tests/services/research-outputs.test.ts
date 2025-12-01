@@ -8,7 +8,26 @@ import {
     type ResearchOutputsQuery,
     type ResearchOutputListResult,
     type ClassificationRefList,
-    type OrderingsList
+    type OrderingsList,
+    type ContentRefListResult,
+    type ResearchOutputDependentsParams,
+    type DisciplinesAssociation,
+    type DisciplinesAssociationsQuery,
+    type DisciplinesAssociationListResult,
+    type DisciplinesDisciplineListResult,
+    type DisciplinesDisciplineSchemeListResult,
+    type ResearchOutputAllowedDisciplinesParams,
+    type NoteListResult,
+    type Note,
+    type AllowedKeywordGroupConfigurationList,
+    type LocalesList,
+    type MetricCollectionDefinitionList,
+    type ResearchOutputPeerReviewConfigurationListResult,
+    type AllowedTemplateListResult,
+    type WorkflowListResult,
+    type MetricCollection,
+    type ResearchOutputNotesParams,
+    type UploadedFile
 } from '../../src/services/research-outputs'
 
 type PureClientLike = Pick<PureClient, 'get' | 'post' | 'put' | 'delete'>
@@ -34,91 +53,291 @@ describe('ResearchOutputsService', () => {
         jest.clearAllMocks()
     })
 
-    it('lists research outputs with params and config', async () => {
+    it('lists research outputs and executes queries', async () => {
         const params: ResearchOutputListParams = { size: 10, offset: 5 }
         const config: AxiosRequestConfig = { timeout: 2000 }
-        const result = { count: 1 } as unknown as ResearchOutputListResult
+        const list = { count: 1 } as unknown as ResearchOutputListResult
 
-        client.get.mockResolvedValueOnce(result)
+        client.get.mockResolvedValueOnce(list)
 
-        const response = await service.list(params, config)
-
+        expect(await service.list(params, config)).toBe(list)
         expect(client.get).toHaveBeenCalledWith(basePath, params, config)
-        expect(response).toBe(result)
-    })
 
-    it('executes research output query', async () => {
         const body = { window: { size: 25 } } as unknown as ResearchOutputsQuery
-        const result = { count: 1 } as unknown as ResearchOutputListResult
-        const config: AxiosRequestConfig = { timeout: 1500 }
+        const queryResult = { count: 2 } as unknown as ResearchOutputListResult
+        const queryConfig: AxiosRequestConfig = { timeout: 1500 }
 
-        client.post.mockResolvedValueOnce(result)
+        client.post.mockResolvedValueOnce(queryResult)
 
-        const response = await service.query(body, config)
-
-        expect(client.post).toHaveBeenCalledWith(`${basePath}/search`, body, undefined, config)
-        expect(response).toBe(result)
+        expect(await service.query(body, queryConfig)).toBe(queryResult)
+        expect(client.post).toHaveBeenCalledWith(`${basePath}/search`, body, undefined, queryConfig)
     })
 
-    it('fetches a single research output', async () => {
-        const uuid = '123'
-        const result = { uuid } as unknown as ResearchOutput
-        client.get.mockResolvedValueOnce(result)
+    it('retrieves, creates, updates and removes research outputs', async () => {
+        const uuid = 'research-output'
+        const output = { uuid } as unknown as ResearchOutput
 
-        const response = await service.get(uuid)
-
+        client.get.mockResolvedValueOnce(output)
+        expect(await service.get(uuid)).toBe(output)
         expect(client.get).toHaveBeenCalledWith(`${basePath}/${uuid}`, undefined, undefined)
-        expect(response).toBe(result)
-    })
 
-    it('creates a research output', async () => {
-        const payload = { title: 'Example' } as unknown as ResearchOutput
-        client.put.mockResolvedValueOnce(payload)
+        client.put.mockResolvedValueOnce(output)
+        expect(await service.create(output)).toBe(output)
+        expect(client.put).toHaveBeenNthCalledWith(1, basePath, output, undefined, undefined)
 
-        const response = await service.create(payload)
+        client.put.mockResolvedValueOnce(output)
+        expect(await service.update(uuid, output)).toBe(output)
+        expect(client.put).toHaveBeenNthCalledWith(2, `${basePath}/${uuid}`, output, undefined, undefined)
 
-        expect(client.put).toHaveBeenCalledWith(basePath, payload, undefined, undefined)
-        expect(response).toBe(payload)
-    })
-
-    it('updates an existing research output', async () => {
-        const uuid = '456'
-        const payload = { uuid } as unknown as ResearchOutput
-        client.put.mockResolvedValueOnce(payload)
-
-        const response = await service.update(uuid, payload)
-
-        expect(client.put).toHaveBeenCalledWith(`${basePath}/${uuid}`, payload, undefined, undefined)
-        expect(response).toBe(payload)
-    })
-
-    it('removes a research output', async () => {
-        const uuid = '789'
         client.delete.mockResolvedValueOnce(undefined)
-
         await service.remove(uuid)
-
         expect(client.delete).toHaveBeenCalledWith(`${basePath}/${uuid}`, undefined, undefined)
     })
 
-    it('retrieves allowed categories', async () => {
-        const result = { items: [] } as unknown as ClassificationRefList
-        client.get.mockResolvedValueOnce(result)
+    it('locks, unlocks and lists dependents', async () => {
+        const uuid = 'lockable-output'
+        const dependents = { items: [] } as unknown as ContentRefListResult
+        const params = { size: 5 } as ResearchOutputDependentsParams
 
-        const response = await service.getAllowedCategories()
+        client.post.mockResolvedValue(undefined)
+        await service.lock(uuid)
+        await service.unlock(uuid)
 
-        expect(client.get).toHaveBeenCalledWith(`${basePath}/allowed-categories`, undefined, undefined)
-        expect(response).toBe(result)
+        expect(client.post).toHaveBeenNthCalledWith(1, `${basePath}/${uuid}/actions/lock`, undefined, undefined, undefined)
+        expect(client.post).toHaveBeenNthCalledWith(2, `${basePath}/${uuid}/actions/unlock`, undefined, undefined, undefined)
+
+        client.get.mockResolvedValueOnce(dependents)
+        expect(await service.listDependents(uuid, params)).toBe(dependents)
+        expect(client.get).toHaveBeenCalledWith(`${basePath}/${uuid}/dependents`, params, undefined)
     })
 
-    it('retrieves orderings', async () => {
-        const result = { orderings: [] } as unknown as OrderingsList
-        client.get.mockResolvedValueOnce(result)
+    it('manages discipline associations', async () => {
+        const uuid = 'discipline-uuid'
+        const scheme = 'scheme'
+        const association = { uuid } as unknown as DisciplinesAssociation
+        const updated = { ...association, values: [] } as unknown as DisciplinesAssociation
+        const query = { window: { size: 1 } } as unknown as DisciplinesAssociationsQuery
+        const associationList = { items: [] } as unknown as DisciplinesAssociationListResult
+        const allowedDisciplines = { items: [] } as unknown as DisciplinesDisciplineListResult
+        const allowedSchemes = { items: [] } as unknown as DisciplinesDisciplineSchemeListResult
+        const allowedParams = { size: 100 } as ResearchOutputAllowedDisciplinesParams
 
-        const response = await service.getOrderings()
+        client.get.mockResolvedValueOnce(association)
+        expect(await service.getDisciplineAssociation(uuid, scheme)).toBe(association)
+        expect(client.get).toHaveBeenCalledWith(`${basePath}/${uuid}/disciplines/${scheme}`, undefined, undefined)
 
-        expect(client.get).toHaveBeenCalledWith(`${basePath}/orderings`, undefined, undefined)
-        expect(response).toBe(result)
+        client.put.mockResolvedValueOnce(updated)
+        expect(await service.updateDisciplineAssociation(uuid, scheme, association)).toBe(updated)
+        expect(client.put).toHaveBeenCalledWith(`${basePath}/${uuid}/disciplines/${scheme}`, association, undefined, undefined)
+
+        client.post.mockResolvedValueOnce(associationList)
+        expect(await service.listDisciplineAssociations(scheme, query)).toBe(associationList)
+        expect(client.post).toHaveBeenCalledWith(`${basePath}/disciplines/${scheme}/search`, query, undefined, undefined)
+
+        client.get.mockResolvedValueOnce(allowedDisciplines)
+        expect(await service.getAllowedDisciplines(scheme, allowedParams)).toBe(allowedDisciplines)
+        expect(client.get).toHaveBeenCalledWith(
+            `${basePath}/disciplines/${scheme}/allowed-disciplines`,
+            allowedParams,
+            undefined
+        )
+
+        client.get.mockResolvedValueOnce(allowedSchemes)
+        expect(await service.getAllowedDisciplineSchemes()).toBe(allowedSchemes)
+        expect(client.get).toHaveBeenCalledWith(`${basePath}/disciplines/allowed-discipline-schemes`, undefined, undefined)
+    })
+
+    it('handles metrics and notes', async () => {
+        const uuid = 'metrics-uuid'
+        const collectionId = 'collection'
+        const metrics = { items: [] } as unknown as MetricCollection
+        const notes = { items: [] } as unknown as NoteListResult
+        const note = { text: 'note' } as unknown as Note
+        const noteParams = { size: 10 } as ResearchOutputNotesParams
+
+        client.get.mockResolvedValueOnce(metrics)
+        expect(await service.listMetricsFromCollection(uuid, collectionId)).toBe(metrics)
+        expect(client.get).toHaveBeenCalledWith(`${basePath}/${uuid}/metrics/${collectionId}`, undefined, undefined)
+
+        client.get.mockResolvedValueOnce(notes)
+        expect(await service.listNotes(uuid, noteParams)).toBe(notes)
+        expect(client.get).toHaveBeenCalledWith(`${basePath}/${uuid}/notes`, noteParams, undefined)
+
+        client.put.mockResolvedValueOnce(note)
+        expect(await service.createNote(uuid, note)).toBe(note)
+        expect(client.put).toHaveBeenCalledWith(`${basePath}/${uuid}/notes`, note, undefined, undefined)
+    })
+
+    it('retrieves classification metadata', async () => {
+        const classification = { items: [] } as unknown as ClassificationRefList
+        client.get.mockResolvedValue(classification)
+
+        const expectations: Array<{ call: () => Promise<ClassificationRefList>; path: string }> = [
+            { call: () => service.getAllowedAdditionalFileAccessTypes(), path: `${basePath}/allowed-additional-file-access-types` },
+            { call: () => service.getAllowedAdditionalFileLicenseTypes(), path: `${basePath}/allowed-additional-file-license-types` },
+            { call: () => service.getAllowedArticleProcessingChargeCurrencies(), path: `${basePath}/allowed-article-processing-charge-currencies` },
+            { call: () => service.getAllowedBookAnthologyContributorRoles(), path: `${basePath}/allowed-book-anthology-contributor-roles` },
+            { call: () => service.getAllowedBookAnthologyDescriptionTypes(), path: `${basePath}/allowed-book-anthology-description-types` },
+            { call: () => service.getAllowedCaseNoteSources(), path: `${basePath}/allowed-case-note-sources` },
+            { call: () => service.getAllowedCategories(), path: `${basePath}/allowed-categories` },
+            {
+                call: () => service.getAllowedContributionToBookAnthologyContributorRoles(),
+                path: `${basePath}/allowed-contribution-to-book-anthology-contributor-roles`
+            },
+            {
+                call: () => service.getAllowedContributionToBookAnthologyDescriptionTypes(),
+                path: `${basePath}/allowed-contribution-to-book-anthology-description-types`
+            },
+            {
+                call: () => service.getAllowedContributionToConferenceContributorRoles(),
+                path: `${basePath}/allowed-contribution-to-conference-contributor-roles`
+            },
+            {
+                call: () => service.getAllowedContributionToConferenceDescriptionTypes(),
+                path: `${basePath}/allowed-contribution-to-conference-description-types`
+            },
+            {
+                call: () => service.getAllowedContributionToJournalContributorRoles(),
+                path: `${basePath}/allowed-contribution-to-journal-contributor-roles`
+            },
+            {
+                call: () => service.getAllowedContributionToJournalDescriptionTypes(),
+                path: `${basePath}/allowed-contribution-to-journal-description-types`
+            },
+            {
+                call: () => service.getAllowedContributionToMemorandumContributorRoles(),
+                path: `${basePath}/allowed-contribution-to-memorandum-contributor-roles`
+            },
+            {
+                call: () => service.getAllowedContributionToMemorandumDescriptionTypes(),
+                path: `${basePath}/allowed-contribution-to-memorandum-description-types`
+            },
+            {
+                call: () => service.getAllowedContributionToPeriodicalContributorRoles(),
+                path: `${basePath}/allowed-contribution-to-periodical-contributor-roles`
+            },
+            {
+                call: () => service.getAllowedContributionToPeriodicalDescriptionTypes(),
+                path: `${basePath}/allowed-contribution-to-periodical-description-types`
+            },
+            { call: () => service.getAllowedContributorCountries(), path: `${basePath}/allowed-contributor-countries` },
+            { call: () => service.getAllowedCountries(), path: `${basePath}/allowed-countries` },
+            {
+                call: () => service.getAllowedCustomDefinedFieldClassifications('field'),
+                path: `${basePath}/allowed-custom-defined-field-values/field/classifications`
+            },
+            {
+                call: () => service.getAllowedElectronicVersionAccessTypes(),
+                path: `${basePath}/allowed-electronic-version-access-types`
+            },
+            {
+                call: () => service.getAllowedElectronicVersionLicenseTypes(),
+                path: `${basePath}/allowed-electronic-version-license-types`
+            },
+            {
+                call: () => service.getAllowedElectronicVersionVersionTypes(),
+                path: `${basePath}/allowed-electronic-version-version-types`
+            },
+            { call: () => service.getAllowedImageTypes(), path: `${basePath}/allowed-image-types` },
+            {
+                call: () => service.getAllowedKeywordGroupConfigurationClassifications(42),
+                path: `${basePath}/allowed-keyword-group-configurations/42/classifications`
+            },
+            { call: () => service.getAllowedLanguages(), path: `${basePath}/allowed-languages` },
+            { call: () => service.getAllowedLinkTypes(), path: `${basePath}/allowed-link-types` },
+            { call: () => service.getAllowedMainResearchAreas(), path: `${basePath}/allowed-main-research-areas` },
+            { call: () => service.getAllowedMemorandumContributorRoles(), path: `${basePath}/allowed-memorandum-contributor-roles` },
+            { call: () => service.getAllowedMemorandumDescriptionTypes(), path: `${basePath}/allowed-memorandum-description-types` },
+            { call: () => service.getAllowedNonTextualContributorRoles(), path: `${basePath}/allowed-non-textual-contributor-roles` },
+            { call: () => service.getAllowedNonTextualDescriptionTypes(), path: `${basePath}/allowed-non-textual-description-types` },
+            {
+                call: () => service.getAllowedOtherContributionContributorRoles(),
+                path: `${basePath}/allowed-other-contribution-contributor-roles`
+            },
+            {
+                call: () => service.getAllowedOtherContributionDescriptionTypes(),
+                path: `${basePath}/allowed-other-contribution-description-types`
+            },
+            { call: () => service.getAllowedOutputMedias(), path: `${basePath}/allowed-output-medias` },
+            { call: () => service.getAllowedPatentContributorRoles(), path: `${basePath}/allowed-patent-contributor-roles` },
+            { call: () => service.getAllowedPatentDescriptionTypes(), path: `${basePath}/allowed-patent-description-types` },
+            { call: () => service.getAllowedPublicationStatuses(), path: `${basePath}/allowed-publication-statuses` },
+            { call: () => service.getAllowedQualifications(), path: `${basePath}/allowed-qualifications` },
+            { call: () => service.getAllowedSupervisorRoles(), path: `${basePath}/allowed-supervisor-roles` },
+            { call: () => service.getAllowedThesisContributorRoles(), path: `${basePath}/allowed-thesis-contributor-roles` },
+            { call: () => service.getAllowedThesisDescriptionTypes(), path: `${basePath}/allowed-thesis-description-types` },
+            { call: () => service.getAllowedTypes(), path: `${basePath}/allowed-types` },
+            { call: () => service.getAllowedWorkingPaperContributorRoles(), path: `${basePath}/allowed-working-paper-contributor-roles` },
+            { call: () => service.getAllowedWorkingPaperDescriptionTypes(), path: `${basePath}/allowed-working-paper-description-types` }
+        ]
+
+        for (const expectation of expectations) {
+            expect(await expectation.call()).toBe(classification)
+            expect(client.get).toHaveBeenLastCalledWith(expectation.path, undefined, undefined)
+        }
+    })
+
+    it('retrieves configured lists', async () => {
+        const keywordConfigs = { items: [] } as unknown as AllowedKeywordGroupConfigurationList
+        const locales = { locales: [] } as unknown as LocalesList
+        const metrics = { items: [] } as unknown as MetricCollectionDefinitionList
+        const peerReview = { items: [] } as unknown as ResearchOutputPeerReviewConfigurationListResult
+        const templates = { templates: [] } as unknown as AllowedTemplateListResult
+        const workflow = { items: [] } as unknown as WorkflowListResult
+        const orderings = { orderings: [] } as unknown as OrderingsList
+
+        client.get.mockResolvedValueOnce(keywordConfigs)
+        expect(await service.getAllowedKeywordGroupConfigurations()).toBe(keywordConfigs)
+        expect(client.get).toHaveBeenLastCalledWith(`${basePath}/allowed-keyword-group-configurations`, undefined, undefined)
+
+        client.get.mockResolvedValueOnce(locales)
+        expect(await service.getAllowedLocales()).toBe(locales)
+        expect(client.get).toHaveBeenLastCalledWith(`${basePath}/allowed-locales`, undefined, undefined)
+
+        client.get.mockResolvedValueOnce(metrics)
+        expect(await service.getAllowedMetricCollections()).toBe(metrics)
+        expect(client.get).toHaveBeenLastCalledWith(`${basePath}/allowed-metric-collections`, undefined, undefined)
+
+        client.get.mockResolvedValueOnce(peerReview)
+        expect(await service.getAllowedPeerReviewConfigurations()).toBe(peerReview)
+        expect(client.get).toHaveBeenLastCalledWith(`${basePath}/allowed-peer-review-configurations`, undefined, undefined)
+
+        client.get.mockResolvedValueOnce(templates)
+        expect(await service.getAllowedTemplates()).toBe(templates)
+        expect(client.get).toHaveBeenLastCalledWith(`${basePath}/allowed-templates`, undefined, undefined)
+
+        client.get.mockResolvedValueOnce(workflow)
+        expect(await service.getAllowedWorkflowSteps()).toBe(workflow)
+        expect(client.get).toHaveBeenLastCalledWith(`${basePath}/allowed-workflow-steps`, undefined, undefined)
+
+        client.get.mockResolvedValueOnce(orderings)
+        expect(await service.getOrderings()).toBe(orderings)
+        expect(client.get).toHaveBeenLastCalledWith(`${basePath}/orderings`, undefined, undefined)
+    })
+
+    it('fetches and uploads files', async () => {
+        const fileContents = 'binary'
+        const uploaded = { id: 'fileId' } as unknown as UploadedFile
+        const config: AxiosRequestConfig = { timeout: 5, headers: { 'X-Test': '1' } }
+
+        client.get.mockResolvedValueOnce(fileContents)
+        expect(await service.getFile('uuid', 'file')).toBe(fileContents)
+        expect(client.get).toHaveBeenCalledWith(`${basePath}/uuid/files/file`, undefined, undefined)
+
+        client.put.mockResolvedValueOnce(uploaded)
+        expect(await service.uploadFile('payload', 'text/plain', config)).toBe(uploaded)
+        expect(client.put).toHaveBeenCalledWith(
+            `${basePath}/file-uploads`,
+            'payload',
+            undefined,
+            expect.objectContaining({
+                timeout: 5,
+                headers: expect.objectContaining({
+                    'Content-Type': 'text/plain',
+                    'X-Test': '1'
+                })
+            })
+        )
     })
 
     it('respects custom base path', async () => {

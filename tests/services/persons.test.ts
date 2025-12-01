@@ -26,7 +26,8 @@ import {
     type WorkflowListResult,
     type PersonDependentsParams,
     type PersonNotesParams,
-    type PersonAllowedDisciplineParams
+    type PersonAllowedDisciplineParams,
+    type UploadedFile
 } from '../../src/services/persons'
 
 type PureClientLike = Pick<PureClient, 'get' | 'post' | 'put' | 'delete'>
@@ -292,6 +293,34 @@ describe('PersonsService', () => {
         expect(await service.getAllowedStudentOrganizationAssociationsAttendanceStatus()).toBe(classification)
         expect(client.get).toHaveBeenLastCalledWith(`${basePath}/allowed-student-organization-associations/attendance-status`, undefined, undefined)
 
+        expect(await service.getAllowedStudentAssociationsEmploymentTypes()).toBe(classification)
+        expect(client.get).toHaveBeenLastCalledWith(
+            `${basePath}/allowed-student-organization-associations-employment-types`,
+            undefined,
+            undefined
+        )
+
+        expect(await service.getAllowedStudentOrganizationAssociationsGetStudentCountryOfDomiciles()).toBe(classification)
+        expect(client.get).toHaveBeenLastCalledWith(
+            `${basePath}/allowed-student-organization-associations-country-of-domicile-types`,
+            undefined,
+            undefined
+        )
+
+        expect(await service.getAllowedStudentOrganizationAssociationsGetStudentNationalities()).toBe(classification)
+        expect(client.get).toHaveBeenLastCalledWith(
+            `${basePath}/allowed-student-organization-associations-nationality-types`,
+            undefined,
+            undefined
+        )
+
+        expect(await service.getAllowedStudentOrganizationAssociationsStudentTypeDescriptions()).toBe(classification)
+        expect(client.get).toHaveBeenLastCalledWith(
+            `${basePath}/allowed-student-organization-associations-type-description-types`,
+            undefined,
+            undefined
+        )
+
         expect(await service.getAllowedTitlesTypes()).toBe(classification)
         expect(client.get).toHaveBeenLastCalledWith(`${basePath}/allowed-titles-types`, undefined, undefined)
 
@@ -325,6 +354,28 @@ describe('PersonsService', () => {
         client.get.mockResolvedValueOnce(workflow)
         expect(await service.getAllowedWorkflowSteps()).toBe(workflow)
         expect(client.get).toHaveBeenLastCalledWith(`${basePath}/allowed-workflow-steps`, undefined, undefined)
+    })
+
+    it('fetches and uploads files', async () => {
+        const file = 'binary'
+        const uploaded = { id: 'file-id' } as unknown as UploadedFile
+
+        client.get.mockResolvedValueOnce(file)
+        client.put.mockResolvedValueOnce(uploaded)
+
+        expect(await service.getFile('uuid', 'file')).toBe(file)
+        expect(client.get).toHaveBeenCalledWith(`${basePath}/uuid/files/file`, undefined, undefined)
+
+        expect(await service.uploadFile('payload', 'text/plain', { timeout: 1 })).toBe(uploaded)
+        expect(client.put).toHaveBeenCalledWith(
+            `${basePath}/file-uploads`,
+            'payload',
+            undefined,
+            expect.objectContaining({
+                headers: expect.objectContaining({ 'Content-Type': 'text/plain' }),
+                timeout: 1
+            })
+        )
     })
 
     it('supports custom base path', async () => {

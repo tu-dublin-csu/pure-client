@@ -1,21 +1,30 @@
 import type { AxiosRequestConfig } from 'axios'
 
-import type { components } from '../../src/generated/pure'
 import { PureClient } from '../../src/pure-client'
 import {
     AwardsService,
     type Award,
+    type AwardAllowedDisciplinesParams,
     type AwardListParams,
     type AwardListResult,
+    type AwardNotesParams,
     type AwardsQuery,
+    type AllowedKeywordGroupConfigurationList,
+    type AllowedTemplateListResult,
     type AwardBudget,
     type AwardBudgetResult,
     type AwardCluster,
     type DisciplinesAssociation,
+    type DisciplinesDisciplineListResult,
+    type DisciplinesDisciplineSchemeListResult,
     type ClassificationRefList,
+    type LocalesList,
     type OrderingsList,
     type ContentRefListResult,
-    type Note
+    type Note,
+    type NoteListResult,
+    type UploadedFile,
+    type WorkflowListResult
 } from '../../src/services/awards'
 
 type PureClientLike = Pick<PureClient, 'get' | 'post' | 'put' | 'delete'>
@@ -145,33 +154,143 @@ describe('AwardsService', () => {
 
     it('lists and creates notes', async () => {
         const uuid = 'award-notes'
-        const notes = { items: [] } as unknown as components['schemas']['NoteListResult']
+        const params = { size: 10 } as AwardNotesParams
+        const notes = { items: [] } as unknown as NoteListResult
         const note = { text: 'note' } as unknown as Note
 
         client.get.mockResolvedValueOnce(notes)
         client.put.mockResolvedValueOnce(note)
 
-        expect(await service.listNotes(uuid)).toBe(notes)
-        expect(client.get).toHaveBeenCalledWith(`${basePath}/${uuid}/notes`, undefined, undefined)
+        expect(await service.listNotes(uuid, params)).toBe(notes)
+        expect(client.get).toHaveBeenCalledWith(`${basePath}/${uuid}/notes`, params, undefined)
 
         expect(await service.createNote(uuid, note)).toBe(note)
         expect(client.put).toHaveBeenCalledWith(`${basePath}/${uuid}/notes`, note, undefined, undefined)
     })
 
-    it('retrieves allowed metadata', async () => {
-        const roles = { items: [] } as unknown as ClassificationRefList
-        const types = { items: [] } as unknown as ClassificationRefList
+    it.each<[
+        keyof AwardsService,
+        string
+    ]>([
+        ['getAllowedAwardholderRoles', '/allowed-awardholder-roles'],
+        ['getAllowedBudgetAccountClassifications', '/allowed-budget-account-classifications'],
+        ['getAllowedClassifiedIdentifierTypes', '/allowed-classified-identifier-types'],
+        ['getAllowedCollaboratorTypes', '/allowed-collaborator-types'],
+        ['getAllowedDescriptionTypes', '/allowed-description-types'],
+        ['getAllowedDocumentLicenses', '/allowed-document-licenses'],
+        ['getAllowedDocumentTypes', '/allowed-document-types'],
+        ['getAllowedDocumentVersionTypes', '/allowed-document-version-types'],
+        ['getAllowedFundingClassifications', '/allowed-funding-classifications'],
+        ['getAllowedLinkTypes', '/allowed-link-types'],
+        ['getAllowedNatureTypes', '/allowed-nature-types'],
+        ['getAllowedTypes', '/allowed-types']
+    ])('retrieves classification metadata via %s', async (methodName, suffix) => {
+        const list = { items: [] } as unknown as ClassificationRefList
+        client.get.mockResolvedValue(list)
+
+        const result = await (service as unknown as Record<string, () => Promise<ClassificationRefList>>)[
+            methodName as string
+        ]()
+
+        expect(result).toBe(list)
+        expect(client.get).toHaveBeenCalledWith(`${basePath}${suffix}`, undefined, undefined)
+    })
+
+    it('retrieves custom field and keyword classifications', async () => {
+        const custom = { items: [] } as unknown as ClassificationRefList
+        const keyword = { items: [] } as unknown as ClassificationRefList
+
+        client.get.mockResolvedValueOnce(custom).mockResolvedValueOnce(keyword)
+
+        expect(await service.getAllowedCustomDefinedFieldClassifications('field')).toBe(custom)
+        expect(client.get).toHaveBeenNthCalledWith(
+            1,
+            `${basePath}/allowed-custom-defined-field-values/field/classifications`,
+            undefined,
+            undefined
+        )
+
+        expect(await service.getAllowedKeywordGroupConfigurationClassifications(12)).toBe(keyword)
+        expect(client.get).toHaveBeenNthCalledWith(
+            2,
+            `${basePath}/allowed-keyword-group-configurations/12/classifications`,
+            undefined,
+            undefined
+        )
+    })
+
+    it('retrieves keyword configurations and templates', async () => {
+        const configurations = { items: [] } as unknown as AllowedKeywordGroupConfigurationList
+        const templates = { items: [] } as unknown as AllowedTemplateListResult
+
+        client.get.mockResolvedValueOnce(configurations).mockResolvedValueOnce(templates)
+
+        expect(await service.getAllowedKeywordGroupConfigurations()).toBe(configurations)
+        expect(client.get).toHaveBeenNthCalledWith(1, `${basePath}/allowed-keyword-group-configurations`, undefined, undefined)
+
+        expect(await service.getAllowedTemplates()).toBe(templates)
+        expect(client.get).toHaveBeenNthCalledWith(2, `${basePath}/allowed-templates`, undefined, undefined)
+    })
+
+    it('retrieves locales and workflow steps', async () => {
+        const locales = { locales: [] } as unknown as LocalesList
+        const workflow = { steps: [] } as unknown as WorkflowListResult
         const orderings = { orderings: [] } as unknown as OrderingsList
 
-        client.get.mockResolvedValueOnce(roles).mockResolvedValueOnce(types).mockResolvedValueOnce(orderings)
+        client.get
+            .mockResolvedValueOnce(locales)
+            .mockResolvedValueOnce(workflow)
+            .mockResolvedValueOnce(orderings)
 
-        expect(await service.getAllowedAwardholderRoles()).toBe(roles)
-        expect(await service.getAllowedTypes()).toBe(types)
+        expect(await service.getAllowedLocales()).toBe(locales)
+        expect(await service.getAllowedWorkflowSteps()).toBe(workflow)
         expect(await service.getOrderings()).toBe(orderings)
 
-        expect(client.get).toHaveBeenNthCalledWith(1, `${basePath}/allowed-awardholder-roles`, undefined, undefined)
-        expect(client.get).toHaveBeenNthCalledWith(2, `${basePath}/allowed-types`, undefined, undefined)
+        expect(client.get).toHaveBeenNthCalledWith(1, `${basePath}/allowed-locales`, undefined, undefined)
+        expect(client.get).toHaveBeenNthCalledWith(2, `${basePath}/allowed-workflow-steps`, undefined, undefined)
         expect(client.get).toHaveBeenNthCalledWith(3, `${basePath}/orderings`, undefined, undefined)
+    })
+
+    it('retrieves discipline metadata', async () => {
+        const list = { items: [] } as unknown as DisciplinesDisciplineListResult
+        const schemes = { items: [] } as unknown as DisciplinesDisciplineSchemeListResult
+
+        client.get.mockResolvedValueOnce(list).mockResolvedValueOnce(schemes)
+
+        expect(
+            await service.getAllowedDisciplines('scheme', { size: 5 } as AwardAllowedDisciplinesParams)
+        ).toBe(list)
+        expect(client.get).toHaveBeenNthCalledWith(
+            1,
+            `${basePath}/disciplines/scheme/allowed-disciplines`,
+            { size: 5 },
+            undefined
+        )
+
+        expect(await service.getAllowedDisciplineSchemes()).toBe(schemes)
+        expect(client.get).toHaveBeenNthCalledWith(2, `${basePath}/disciplines/allowed-discipline-schemes`, undefined, undefined)
+    })
+
+    it('fetches and uploads files', async () => {
+        const file = 'binary'
+        const uploaded = { id: '1' } as unknown as UploadedFile
+
+        client.get.mockResolvedValueOnce(file)
+        client.put.mockResolvedValueOnce(uploaded)
+
+        expect(await service.getFile('uuid', 'file')).toBe(file)
+        expect(client.get).toHaveBeenCalledWith(`${basePath}/uuid/files/file`, undefined, undefined)
+
+        expect(await service.uploadFile('payload', 'text/plain', { timeout: 1 })).toBe(uploaded)
+        expect(client.put).toHaveBeenCalledWith(
+            `${basePath}/file-uploads`,
+            'payload',
+            undefined,
+            expect.objectContaining({
+                headers: expect.objectContaining({ 'Content-Type': 'text/plain' }),
+                timeout: 1
+            })
+        )
     })
 
     it('supports custom base path', async () => {

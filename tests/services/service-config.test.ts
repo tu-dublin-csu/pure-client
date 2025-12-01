@@ -37,24 +37,22 @@ type PureClientLike = Pick<PureClient, 'get' | 'post' | 'put' | 'delete'>
 describe('service-config helpers', () => {
     it('resolves relative paths with parameters', () => {
         const operation: ServiceOperationConfig = {
-            method: 'get',
             operationId: 'role_get_assignable_role',
             path: '/{assignableRoleName}'
         }
 
-        const path = resolveOperationPath('/roles', operation, { assignableRoleName: 'Admin User' })
+        const path = resolveOperationPath('/roles', operation.path, { assignableRoleName: 'Admin User' })
 
         expect(path).toBe('/roles/Admin%20User')
     })
 
     it('replaces hyphenated path tokens', () => {
         const operation: ServiceOperationConfig = {
-            method: 'get',
             operationId: 'organization_getDisciplineAssociation',
             path: '/{uuid}/disciplines/{discipline-scheme}'
         }
 
-        const path = resolveOperationPath('/organizations', operation, {
+        const path = resolveOperationPath('/organizations', operation.path, {
             uuid: 'org-1',
             'discipline-scheme': 'scheme'
         })
@@ -64,7 +62,7 @@ describe('service-config helpers', () => {
 
     it('throws when required path params are missing', () => {
         expect(() =>
-            resolveOperationPath(rolesServiceConfig.basePath, rolesServiceConfig.operations.get)
+            resolveOperationPath(rolesServiceConfig.basePath, rolesServiceConfig.operations.get.path)
         ).toThrow('Missing required path parameter "assignableRoleName"')
     })
 
@@ -125,7 +123,6 @@ describe('service-config helpers', () => {
         } as unknown as jest.Mocked<PureClientLike>
 
         const operation: ServiceOperationConfig = {
-            method: 'put',
             operationId: 'organization_update',
             path: '/{uuid}'
         }
@@ -158,7 +155,6 @@ describe('service-config helpers', () => {
         } as unknown as jest.Mocked<PureClientLike>
 
         const operation: ServiceOperationConfig = {
-            method: 'delete',
             operationId: 'organization_delete',
             path: '/{uuid}'
         }

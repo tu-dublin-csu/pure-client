@@ -1,4 +1,10 @@
-import axios, { type AxiosInstance } from 'axios'
+import axios, {
+    type AxiosError,
+    type AxiosInstance,
+    type AxiosRequestConfig,
+    type AxiosResponse,
+    type RawAxiosResponseHeaders
+} from 'axios'
 
 import { createHttpClient, PureApiError } from '../../src/http/client'
 
@@ -25,21 +31,8 @@ describe('HTTP client retry and error handling', () => {
     })
 
     it('retries transient failures before succeeding', async () => {
-        const retryableError: any = new Error('Service unavailable')
-        retryableError.isAxiosError = true
-        retryableError.response = {
-            status: 503,
-            statusText: 'Service Unavailable',
-            config: { url: '/resource', method: 'GET' } as any
-        }
-
-        const successResponse: any = {
-            data: { ok: true },
-            status: 200,
-            statusText: 'OK',
-            headers: {},
-            config: { url: '/resource', method: 'GET' } as any
-        }
+        const retryableError = createAxiosError(503, 'Service Unavailable', 'Service unavailable')
+        const successResponse = buildAxiosResponse(200, 'OK', { ok: true })
 
         requestMock.mockRejectedValueOnce(retryableError).mockResolvedValueOnce(successResponse)
 
@@ -78,13 +71,7 @@ describe('HTTP client retry and error handling', () => {
     })
 
     it('wraps non-retryable errors in PureApiError', async () => {
-        const upstreamError: any = new Error('Upstream rejected request')
-        upstreamError.isAxiosError = true
-        upstreamError.response = {
-            status: 400,
-            statusText: 'Bad Request',
-            config: { url: '/resource', method: 'GET' } as any
-        }
+        const upstreamError = createAxiosError(400, 'Bad Request', 'Upstream rejected request')
 
         requestMock.mockRejectedValueOnce(upstreamError)
 
@@ -116,3 +103,26 @@ describe('HTTP client retry and error handling', () => {
         )
     })
 })
+
+type MockAxiosError<T = unknown> = Error & AxiosError<T>
+
+function buildAxiosResponse<T>(status: number, statusText: string, data: T): AxiosResponse<T> {
+    return {
+        data,
+        status,
+        statusText,
+        headers: {} as RawAxiosResponseHeaders,
+        config: {
+            url: '/resource',
+            method: 'get'
+        } satisfies AxiosRequestConfig
+    } as AxiosResponse<T>
+}
+
+function createAxiosError(status: number, statusText: string, message = statusText): MockAxiosError {
+    const error = new Error(message) as MockAxiosError
+    error.isAxiosError = true
+    error.response = buildAxiosResponse(status, statusText, undefined)
+
+    return error
+}

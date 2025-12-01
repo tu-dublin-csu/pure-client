@@ -10,6 +10,8 @@
 
         /* Emit */ /* Specify a file that bundles all outputs into one JavaScript file. If 'declaration' is true, also designates a file that bundles all .d.ts output. */
         "outDir": "dist" /* Specify an output folder for all emitted files. */,
+        "sourceMap": true /* Emit source map files for use with debuggers. */,
+        "inlineSources": true /* Include original source content in the emitted source maps. */,
 
         /* Interop Constraints */
         "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,

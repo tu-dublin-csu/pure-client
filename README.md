@@ -42,11 +42,50 @@ const people = await personsService.query({
 people.items?.forEach(person => {
     console.log(person.uuid, person.name?.formatted?.text)
 })
+
+// Per-call overrides: adjust headers, timeouts, or other Axios options without rebuilding the client
+await personsService.create(payload, {
+    timeout: 60_000,
+    headers: {
+        Authorization: `Bearer ${token}`,
+        'X-Trace-Id': traceId
+    }
+})
 ```
+
+## Available services
+
+The following service wrappers are generated from the OpenAPI document and exported from the package:
+
+- `ActivitiesService`
+- `ApplicationsService`
+- `AuthorCollaborationsService`
+- `AwardsService`
+- `ClassificationSchemesService`
+- `ConceptsService`
+- `DataSetsService`
+- `EquipmentService`
+- `EventsService`
+- `ExternalOrganizationsService`
+- `ExternalPersonsService`
+- `FundingOpportunitiesService`
+- `ImpactsService`
+- `JournalsService`
+- `OrganizationsService`
+- `PersonsService`
+- `PressMediaService`
+- `PrizesService`
+- `ProjectsService`
+- `PublishersService`
+- `ResearchOutputsService`
+- `RolesService`
+- `StudentThesesService`
+- `ThesauriService`
+- `UsersService`
 
 ### Working with unsupported endpoints
 
-The OpenAPI definition exposes far more endpoints than the curated service layer. When you need an operation that is not wrapped yet, call `PureClient` directly and lean on the generated OpenAPI types for safety.
+You can also call `PureClient` directly;
 
 ```ts
 import { PureClient } from 'pure-client'
@@ -82,4 +121,13 @@ Recommendation is to carry out development in the supplied `.devcontainer` confi
 - open a terminal in the devContainer and test with `npm run test`
 - regenerate OpenAPI types with `npm run types:generate` whenever `openapi/pure.yaml` changes; CI-safe check available via `npm run types:check`
 - perform a manual sanity check against a live PURE API with `npm run sanity [domain] [list|get] [arg]` (requires `PURE_URL` and `PURE_API_KEY`; builds `dist/` automatically if missing)
-- service layer modules live under `src/services` (e.g. `ActivitiesService`, `ApplicationsService`, `AwardsService`, `AuthorCollaborationsService`, `ConceptsService`, `EquipmentService`, `EventsService`, `DataSetsService`, `FundingOpportunitiesService`, `ImpactsService`, `JournalsService`, `PressMediaService`, `PublishersService`, `RolesService`, `ThesauriService`, `ExternalOrganizationsService`, `ExternalPersonsService`, `OrganizationsService`, `PersonsService`, `PrizesService`, `ProjectsService`, `ResearchOutputsService`, `UsersService`) and can be imported directly or via the root `index.ts`
+- service layer modules live under `src/services` and are exported via the root `index.ts`
+
+### Update pipeline
+
+- drop the latest Pure OpenAPI document into `openapi/pure.yaml`
+- run `npm run types:generate` (orchestrates type generation, post-processing, metadata refresh, and service regeneration with OpenAPI-derived JSDoc)
+- if you tweak generator logic only, re-run `npx tsx scripts/build-service-config.ts` to sync the service metadata/docs without touching the spec
+- when the OpenAPI specification introduces a brand-new domain (prefix the generator does not recognise), add an entry to `serviceDefinitions` in `scripts/build-service-config.ts` and create the corresponding service wrapper before rerunning the generator; updates to existing services are picked up automatically
+- validate locally with `npm run lint` and `npm test`
+- review the resulting diff (generated files plus any service wrappers), then commit and publish according to your release process

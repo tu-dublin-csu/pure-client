@@ -1,21 +1,30 @@
 import type { AxiosRequestConfig } from 'axios'
 
-import type { components } from '../../src/generated/pure'
 import { PureClient } from '../../src/pure-client'
 import {
     ApplicationsService,
     type Application,
+    type ApplicationAllowedDisciplinesParams,
     type ApplicationListParams,
     type ApplicationListResult,
+    type ApplicationNotesParams,
     type ApplicationsQuery,
+    type AllowedKeywordGroupConfigurationList,
+    type AllowedTemplateListResult,
     type ClassificationRefList,
     type DisciplinesAssociation,
+    type DisciplinesDisciplineListResult,
+    type DisciplinesDisciplineSchemeListResult,
+    type LocalesList,
     type ApplicationBudget,
     type ApplicationBudgetResult,
     type ApplicationCluster,
+    type NoteListResult,
     type OrderingsList,
     type ContentRefListResult,
-    type Note
+    type Note,
+    type UploadedFile,
+    type WorkflowListResult
 } from '../../src/services/applications'
 
 type PureClientLike = Pick<PureClient, 'get' | 'post' | 'put' | 'delete'>
@@ -151,32 +160,143 @@ describe('ApplicationsService', () => {
         expect(client.put).toHaveBeenCalledWith(`${basePath}/${uuid}/disciplines/${scheme}`, association, undefined, undefined)
     })
 
-    it('retrieves allowed metadata and orderings', async () => {
-        const roles = { items: [] } as unknown as ClassificationRefList
-        const statuses = { items: [] } as unknown as ClassificationRefList
+    it.each<[
+        keyof ApplicationsService,
+        string
+    ]>([
+        ['getAllowedApplicantRoles', '/allowed-applicant-roles'],
+        ['getAllowedBudgetAccountClassifications', '/allowed-budget-account-classifications'],
+        ['getAllowedClassifiedIdentifierTypes', '/allowed-classified-identifier-types'],
+        ['getAllowedCollaboratorTypes', '/allowed-collaborator-types'],
+        ['getAllowedDescriptionTypes', '/allowed-description-types'],
+        ['getAllowedDocumentLicenses', '/allowed-document-licenses'],
+        ['getAllowedDocumentTypes', '/allowed-document-types'],
+        ['getAllowedDocumentVersionTypes', '/allowed-document-version-types'],
+        ['getAllowedFundingClassifications', '/allowed-funding-classifications'],
+        ['getAllowedLinkTypes', '/allowed-link-types'],
+        ['getAllowedNatureTypes', '/allowed-nature-types'],
+        ['getAllowedStatuses', '/allowed-application-statuses'],
+        ['getAllowedTypes', '/allowed-types']
+    ])('retrieves classification metadata via %s', async (methodName, suffix) => {
+        const response = { items: [] } as unknown as ClassificationRefList
+        client.get.mockResolvedValue(response)
+
+        const result = await (service as unknown as Record<string, () => Promise<ClassificationRefList>>)[
+            methodName as string
+        ]()
+
+        expect(result).toBe(response)
+        expect(client.get).toHaveBeenCalledWith(`${basePath}${suffix}`, undefined, undefined)
+    })
+
+    it('retrieves classification metadata with path params', async () => {
+        const customField = { items: [] } as unknown as ClassificationRefList
+        const keywordClassifications = { items: [] } as unknown as ClassificationRefList
+
+        client.get.mockResolvedValueOnce(customField).mockResolvedValueOnce(keywordClassifications)
+
+        expect(await service.getAllowedCustomDefinedFieldClassifications('field-name')).toBe(customField)
+        expect(client.get).toHaveBeenNthCalledWith(
+            1,
+            `${basePath}/allowed-custom-defined-field-values/field-name/classifications`,
+            undefined,
+            undefined
+        )
+
+        expect(await service.getAllowedKeywordGroupConfigurationClassifications(42)).toBe(keywordClassifications)
+        expect(client.get).toHaveBeenNthCalledWith(
+            2,
+            `${basePath}/allowed-keyword-group-configurations/42/classifications`,
+            undefined,
+            undefined
+        )
+    })
+
+    it('retrieves keyword group configurations and templates', async () => {
+        const configurations = { items: [] } as unknown as AllowedKeywordGroupConfigurationList
+        const templates = { items: [] } as unknown as AllowedTemplateListResult
+
+        client.get.mockResolvedValueOnce(configurations).mockResolvedValueOnce(templates)
+
+        expect(await service.getAllowedKeywordGroupConfigurations()).toBe(configurations)
+        expect(client.get).toHaveBeenNthCalledWith(1, `${basePath}/allowed-keyword-group-configurations`, undefined, undefined)
+
+        expect(await service.getAllowedTemplates()).toBe(templates)
+        expect(client.get).toHaveBeenNthCalledWith(2, `${basePath}/allowed-templates`, undefined, undefined)
+    })
+
+    it('retrieves locale, workflow and ordering metadata', async () => {
+        const locales = { locales: [] } as unknown as LocalesList
+        const workflow = { steps: [] } as unknown as WorkflowListResult
         const orderings = { orderings: [] } as unknown as OrderingsList
 
-        client.get.mockResolvedValueOnce(roles).mockResolvedValueOnce(statuses).mockResolvedValueOnce(orderings)
+        client.get
+            .mockResolvedValueOnce(locales)
+            .mockResolvedValueOnce(workflow)
+            .mockResolvedValueOnce(orderings)
 
-        expect(await service.getAllowedApplicantRoles()).toBe(roles)
-        expect(await service.getAllowedStatuses()).toBe(statuses)
+        expect(await service.getAllowedLocales()).toBe(locales)
+        expect(await service.getAllowedWorkflowSteps()).toBe(workflow)
         expect(await service.getOrderings()).toBe(orderings)
 
-        expect(client.get).toHaveBeenNthCalledWith(1, `${basePath}/allowed-applicant-roles`, undefined, undefined)
-        expect(client.get).toHaveBeenNthCalledWith(2, `${basePath}/allowed-application-statuses`, undefined, undefined)
+        expect(client.get).toHaveBeenNthCalledWith(1, `${basePath}/allowed-locales`, undefined, undefined)
+        expect(client.get).toHaveBeenNthCalledWith(2, `${basePath}/allowed-workflow-steps`, undefined, undefined)
         expect(client.get).toHaveBeenNthCalledWith(3, `${basePath}/orderings`, undefined, undefined)
+    })
+
+    it('retrieves discipline metadata', async () => {
+        const disciplineList = { items: [] } as unknown as DisciplinesDisciplineListResult
+        const disciplineSchemes = { items: [] } as unknown as DisciplinesDisciplineSchemeListResult
+
+        client.get.mockResolvedValueOnce(disciplineList).mockResolvedValueOnce(disciplineSchemes)
+
+        expect(
+            await service.getAllowedDisciplines('scheme', { size: 5 } as ApplicationAllowedDisciplinesParams)
+        ).toBe(disciplineList)
+        expect(client.get).toHaveBeenNthCalledWith(
+            1,
+            `${basePath}/disciplines/scheme/allowed-disciplines`,
+            { size: 5 },
+            undefined
+        )
+
+        expect(await service.getAllowedDisciplineSchemes()).toBe(disciplineSchemes)
+        expect(client.get).toHaveBeenNthCalledWith(2, `${basePath}/disciplines/allowed-discipline-schemes`, undefined, undefined)
+    })
+
+    it('fetches and uploads files', async () => {
+        const fileContents = 'binary'
+        const uploaded = { id: 'upload' } as unknown as UploadedFile
+
+        client.get.mockResolvedValueOnce(fileContents)
+        client.put.mockResolvedValueOnce(uploaded)
+
+        expect(await service.getFile('uuid', 'file-id')).toBe(fileContents)
+        expect(client.get).toHaveBeenCalledWith(`${basePath}/uuid/files/file-id`, undefined, undefined)
+
+        expect(await service.uploadFile('payload', 'text/plain', { timeout: 1 })).toBe(uploaded)
+        expect(client.put).toHaveBeenCalledWith(
+            `${basePath}/file-uploads`,
+            'payload',
+            undefined,
+            expect.objectContaining({
+                headers: expect.objectContaining({ 'Content-Type': 'text/plain' }),
+                timeout: 1
+            })
+        )
     })
 
     it('lists and creates notes', async () => {
         const uuid = 'note-app'
-        const notes = { items: [] } as unknown as components['schemas']['NoteListResult']
+        const params = { size: 25 } as ApplicationNotesParams
+        const notes = { items: [] } as unknown as NoteListResult
         const note = { text: 'hello' } as unknown as Note
 
         client.get.mockResolvedValueOnce(notes)
         client.put.mockResolvedValueOnce(note)
 
-        expect(await service.listNotes(uuid)).toBe(notes)
-        expect(client.get).toHaveBeenCalledWith(`${basePath}/${uuid}/notes`, undefined, undefined)
+        expect(await service.listNotes(uuid, params)).toBe(notes)
+        expect(client.get).toHaveBeenCalledWith(`${basePath}/${uuid}/notes`, params, undefined)
 
         expect(await service.createNote(uuid, note)).toBe(note)
         expect(client.put).toHaveBeenCalledWith(`${basePath}/${uuid}/notes`, note, undefined, undefined)

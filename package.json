@@ -17,7 +17,7 @@
         "lint": "eslint . ",
         "lint:fix": "eslint . --fix ",
         "docs": "jsdoc -c jsdoc.json",
-        "types:generate": "openapi-typescript openapi/pure.yaml --output src/generated/pure.ts && node scripts/postprocess-openapi-types.js",
+        "types:generate": "node scripts/generate-client.mjs",
         "types:check": "node scripts/check-openapi-types.js",
         "sanity": "node scripts/sanity-check.js",
         "audit:service-coverage": "node scripts/audit-service-coverage.js"

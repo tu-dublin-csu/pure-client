@@ -111,7 +111,6 @@ describe('DataSetsService', () => {
         const fileId = 'file-id'
         const fileContent = 'binary'
         const uploadResponse = { id: 'uploaded' } as unknown as UploadedFile
-        const config: AxiosRequestConfig = { timeout: 500 }
 
         client.get.mockResolvedValueOnce(fileContent)
         expect(await service.getFile(uuid, fileId)).toBe(fileContent)
