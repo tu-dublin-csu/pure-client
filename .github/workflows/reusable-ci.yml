@@ -29,6 +29,8 @@ jobs:
               run: npm ci
               env:
                   NODE_AUTH_TOKEN: ${{ secrets['npm-token'] }}
+            - name: Audit dependencies (high severity)
+              run: npm audit --omit=dev --audit-level=high
             - name: Lint
               run: npm run lint
             - name: Test
