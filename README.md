@@ -36,7 +36,6 @@ const people = await personsService.query({
     searchString: 'Doe',
     size: 20,
     order: 'lastName'
-    // use orderings: ['name'] if you need explicit ordering fields
 })
 
 people.items?.forEach(person => {
@@ -112,18 +111,18 @@ Recommendation is to carry out development in the supplied `.devcontainer` confi
 ### Setup
 
 - clone the repo
-- add required environment variables e.g. [[see here]](https://containers.dev/) to a `.env` file
+- copy `.devcontainer/devcontainer.env.EXAMPLE` to `.devcontainer/devcontainer.env` (or add a `.env`) and populate `PURE_URL` and `PURE_API_KEY` before hitting real instances
 - build and start the [devContainer](https://containers.dev/)
 - open a terminal in the devContainer and test with `npm run test`
 - regenerate OpenAPI types with `npm run types:generate` whenever `openapi/pure.yaml` changes; CI-safe check available via `npm run types:check`
-- perform a manual sanity check against a live PURE API with `npm run sanity [domain] [list|get] [arg]` (requires `PURE_URL` and `PURE_API_KEY`; builds `dist/` automatically if missing)
 - service layer modules live under `src/services` and are exported via the root `index.ts`
 
 ### Update pipeline
 
 - drop the latest Pure OpenAPI document into `openapi/pure.yaml`
 - run `npm run types:generate` (orchestrates type generation, post-processing, metadata refresh, and service regeneration with OpenAPI-derived JSDoc)
+- this command runs `scripts/generate-client.mjs`, which executes the full sequence: generate types via `openapi-typescript`, patch helpers, rebuild operation metadata, and rebuilds `src/services/service-config.ts`
 - if you tweak generator logic only, re-run `npx tsx scripts/build-service-config.ts` to sync the service metadata/docs without touching the spec
 - when the OpenAPI specification introduces a brand-new domain (prefix the generator does not recognise), add an entry to `serviceDefinitions` in `scripts/build-service-config.ts` and create the corresponding service wrapper before rerunning the generator; updates to existing services are picked up automatically
 - validate locally with `npm run lint` and `npm test`
-- review the resulting diff (generated files plus any service wrappers), then commit and publish according to your release process
+- review the resulting diff (generated files plus any service wrappers), then commit and publish

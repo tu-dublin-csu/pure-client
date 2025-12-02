@@ -203,6 +203,10 @@ type OpenApiOperation = {
     }
 }
 
+function isSchemaReference(schema: OpenApiSchema | OpenApiSchemaReference): schema is OpenApiSchemaReference {
+    return Boolean((schema as OpenApiSchemaReference).$ref)
+}
+
 type OpenApiPathItem = {
     parameters?: OpenApiParameter[]
 } & Record<string, OpenApiOperation | OpenApiParameter[] | undefined>
@@ -791,7 +795,9 @@ function collectMethodSignature(lines: string[], methodIndex: number): string | 
 
     while (index < lines.length) {
         const line = lines[index]
-        const segment = seenOpening ? line.trim() : line.slice(line.indexOf('(') !== -1 ? line.indexOf('(') : 0)
+        const segment: string = seenOpening
+            ? line.trim()
+            : line.slice(line.indexOf('(') !== -1 ? line.indexOf('(') : 0)
 
         if (segment.length > 0) {
             signature += segment
@@ -1044,62 +1050,63 @@ function extractParameterSchemaMeta(
         return undefined
     }
 
-    if ('$ref' in schema && schema.$ref) {
+    if (isSchemaReference(schema)) {
         return { refName: extractRefName(schema.$ref) }
     }
 
+    const schemaObject: OpenApiSchema = schema
     const meta: ParameterSchemaMeta = {}
 
-    if (schema.type) {
-        meta.type = schema.type
+    if (schemaObject.type) {
+        meta.type = schemaObject.type
     }
 
-    if (schema.format) {
-        meta.format = schema.format
+    if (schemaObject.format) {
+        meta.format = schemaObject.format
     }
 
-    if (Array.isArray(schema.enum) && schema.enum.length > 0) {
-        meta.enumValues = schema.enum
+    if (Array.isArray(schemaObject.enum) && schemaObject.enum.length > 0) {
+        meta.enumValues = schemaObject.enum
     }
 
-    if (schema.default !== undefined && isSchemaPrimitive(schema.default)) {
-        meta.defaultValue = schema.default
+    if (schemaObject.default !== undefined && isSchemaPrimitive(schemaObject.default)) {
+        meta.defaultValue = schemaObject.default
     }
 
-    if (typeof schema.minimum === 'number') {
-        meta.minimum = schema.minimum
+    if (typeof schemaObject.minimum === 'number') {
+        meta.minimum = schemaObject.minimum
     }
 
-    if (typeof schema.maximum === 'number') {
-        meta.maximum = schema.maximum
+    if (typeof schemaObject.maximum === 'number') {
+        meta.maximum = schemaObject.maximum
     }
 
-    if (typeof schema.minLength === 'number') {
-        meta.minLength = schema.minLength
+    if (typeof schemaObject.minLength === 'number') {
+        meta.minLength = schemaObject.minLength
     }
 
-    if (typeof schema.maxLength === 'number') {
-        meta.maxLength = schema.maxLength
+    if (typeof schemaObject.maxLength === 'number') {
+        meta.maxLength = schemaObject.maxLength
     }
 
-    if (schema.pattern) {
-        meta.pattern = schema.pattern
+    if (schemaObject.pattern) {
+        meta.pattern = schemaObject.pattern
     }
 
-    if (schema.nullable === true) {
+    if (schemaObject.nullable === true) {
         meta.nullable = true
     }
 
-    if (schema.items) {
-        const itemMeta = extractParameterSchemaMeta(schema.items)
+    if (schemaObject.items) {
+        const itemMeta = extractParameterSchemaMeta(schemaObject.items)
         const itemSummary = itemMeta ? summarizeSchemaType(itemMeta) : undefined
         if (itemSummary) {
             meta.arrayItemType = itemSummary
         }
     }
 
-    if (schema.$ref) {
-        meta.refName = extractRefName(schema.$ref)
+    if (schemaObject.$ref) {
+        meta.refName = extractRefName(schemaObject.$ref)
     }
 
     return hasSchemaMeta(meta) ? meta : undefined
