@@ -6,7 +6,7 @@ import { resolve } from 'node:path'
 const steps = [
     {
         label: 'Generate OpenAPI types',
-        command: process.platform === 'win32' ? 'npx.cmd' : 'npx',
+        command: 'npx',
         args: [
             'openapi-typescript',
             'openapi/pure.yaml',
@@ -26,7 +26,7 @@ const steps = [
     },
     {
         label: 'Regenerate service config',
-        command: process.platform === 'win32' ? 'npx.cmd' : 'npx',
+        command: 'npx',
         args: ['tsx', 'scripts/build-service-config.ts']
     }
 ]

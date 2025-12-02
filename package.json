@@ -1,7 +1,7 @@
 {
     "name": "pure-client",
     "version": "0.0.4-beta",
-    "description": "A TypeScript application to interact with the PURE API",
+    "description": "A TypeScript client to interact with the PURE API",
     "main": "./dist/index.cjs",
     "type": "module",
     "module": "./dist/index.js",
@@ -19,7 +19,6 @@
         "docs": "jsdoc -c jsdoc.json",
         "types:generate": "node scripts/generate-client.mjs",
         "types:check": "node scripts/check-openapi-types.js",
-        "sanity": "node scripts/sanity-check.js",
         "audit:service-coverage": "node scripts/audit-service-coverage.js"
     },
     "repository": {

@@ -35,7 +35,7 @@ const personsService = new PersonsService(client)
 const people = await personsService.query({
     searchString: 'Doe',
     size: 20,
-    orderBy: 'name'
+    order: 'lastName'
     // use orderings: ['name'] if you need explicit ordering fields
 })
 
@@ -45,11 +45,7 @@ people.items?.forEach(person => {
 
 // Per-call overrides: adjust headers, timeouts, or other Axios options without rebuilding the client
 await personsService.create(payload, {
-    timeout: 60_000,
-    headers: {
-        Authorization: `Bearer ${token}`,
-        'X-Trace-Id': traceId
-    }
+    timeout: 60_000
 })
 ```
 
