@@ -1,21 +1,20 @@
-name: 'Test and Lint code when Pushed to Github or when a Pull Request is made'
+name: Continuous Integration
+
 on:
-    push:
-        branches-ignore:
-            - main
-            - staging
-    pull_request:
-        types: [opened, synchronize]
+  push:
+    branches-ignore:
+      - main
+      - staging
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-    test:
-        runs-on: ubuntu-latest
-        name: Test the application
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-            - name: Install Dependancies
-              run: npm install
-            - name: Test application
-              run: npm test
-            - name: Lint Code
-              run: npm run lint
+  checks:
+    uses: ./.github/workflows/reusable-ci.yml
+    with:
+      node-version: '22'
+    secrets:
+      npm-token: ${{ secrets.PURE_NPM_TOKEN }}

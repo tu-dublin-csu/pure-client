@@ -1,20 +1,26 @@
-import axios from 'axios'
-import { PureClient } from '../src/pure-client'
-
-jest.mock('axios')
-const mockedAxios = axios as jest.Mocked<typeof axios>
+import { PureClient, PureApiError, PureHttpClient } from '../src/pure-client'
 
 describe('Pure Client', () => {
     let client: PureClient
+    let httpClient: jest.Mocked<PureHttpClient>
 
     const url = 'http://example.com/'
     const apiKey = 'test-api-key'
 
     const responseData = { data: 'test data' }
-    const error = new Error('Network Error')
+    const apiError = new PureApiError('Network Error')
 
     beforeEach(() => {
-        client = new PureClient(url, apiKey)
+        httpClient = {
+            axios: {} as never,
+            request: jest.fn(),
+            get: jest.fn(),
+            post: jest.fn(),
+            put: jest.fn(),
+            delete: jest.fn()
+        }
+
+        client = new PureClient(url, apiKey, { httpClient })
     })
 
     afterEach(() => {
@@ -26,96 +32,81 @@ describe('Pure Client', () => {
     })
 
     test('should make a GET request and return response', async () => {
-        mockedAxios.get.mockResolvedValue(responseData)
+        httpClient.get.mockResolvedValue(responseData)
 
         const response = await client.get('test-path')
 
-        expect(axios.get).toHaveBeenCalledTimes(1)
-        expect(response).toBe(responseData.data)
+        expect(httpClient.get).toHaveBeenCalledTimes(1)
+        expect(response).toBe(responseData)
     })
 
     test('should make a POST request and return response', async () => {
-        mockedAxios.post.mockResolvedValue(responseData)
+        httpClient.post.mockResolvedValue(responseData)
 
         const response = await client.post('test-path', { key: 'value' })
 
-        expect(axios.post).toHaveBeenCalledTimes(1)
-        expect(response).toBe(responseData.data)
+        expect(httpClient.post).toHaveBeenCalledTimes(1)
+        expect(response).toBe(responseData)
     })
 
     test('should make a PUT request and return response', async () => {
-        mockedAxios.put.mockResolvedValue(responseData)
+        httpClient.put.mockResolvedValue(responseData)
 
         const response = await client.put('test-path', { key: 'value' })
 
-        expect(axios.put).toHaveBeenCalledTimes(1)
-        expect(response).toBe(responseData.data)
+        expect(httpClient.put).toHaveBeenCalledTimes(1)
+        expect(response).toBe(responseData)
     })
 
     test('should make a DELETE request and return response', async () => {
-        mockedAxios.delete.mockResolvedValue(responseData)
+        httpClient.delete.mockResolvedValue(responseData)
 
         const response = await client.delete('test-path')
 
-        expect(axios.delete).toHaveBeenCalledTimes(1)
+        expect(httpClient.delete).toHaveBeenCalledTimes(1)
         expect(response).toBe(responseData)
     })
 
     test('should handle GET request error', async () => {
-        mockedAxios.get.mockRejectedValue(error)
+        httpClient.get.mockRejectedValue(apiError)
 
-        await expect(client.get('test-path')).rejects.toThrow(error)
+        await expect(client.get('test-path')).rejects.toThrow(apiError)
     })
 
     test('should handle POST request error', async () => {
-        mockedAxios.post.mockRejectedValue(error)
+        httpClient.post.mockRejectedValue(apiError)
 
-        await expect(client.post('test-path', { key: 'value' })).rejects.toThrow(error)
+        await expect(client.post('test-path', { key: 'value' })).rejects.toThrow(apiError)
     })
 
     test('should handle PUT request error', async () => {
-        mockedAxios.put.mockRejectedValue(error)
+        httpClient.put.mockRejectedValue(apiError)
 
-        await expect(client.put('test-path', { key: 'value' })).rejects.toThrow(error)
+        await expect(client.put('test-path', { key: 'value' })).rejects.toThrow(apiError)
     })
 
     test('should handle DELETE request error', async () => {
-        mockedAxios.delete.mockRejectedValue(error)
+        httpClient.delete.mockRejectedValue(apiError)
 
-        await expect(client.delete('test-path')).rejects.toThrow(error)
+        await expect(client.delete('test-path')).rejects.toThrow(apiError)
     })
 
     test('should handle request with correct parameters', async () => {
-        mockedAxios.get.mockResolvedValue(responseData)
+        httpClient.get.mockResolvedValue(responseData)
 
-        const response = await client.get('test-path', { size: 1, 'discipline-scheme': 'test' })
+        const params = { size: 1, 'discipline-scheme': 'test' }
+        const response = await client.get('test-path', params)
 
-        expect(axios.get).toHaveBeenCalledTimes(1)
-        expect(response).toBe(responseData.data)
+        expect(httpClient.get).toHaveBeenCalledWith(
+            'test-path',
+            expect.objectContaining({ params: expect.objectContaining(params) })
+        )
+        expect(response).toBe(responseData)
     })
 
-    test('should log debug messages when debug mode is enabled', async () => {
-        client.setDebug(true)
-        const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
-        mockedAxios.get.mockResolvedValue(responseData)
+    test('should detect PureApiError instances', () => {
+        expect(PureClient.isApiError(apiError)).toBe(true)
+        expect(PureClient.isApiError(new Error('error'))).toBe(false)
+    })
 
-        await client.get('test-path')
-
-        expect(logSpy).toHaveBeenCalledWith('Attempting GET request.')
-        expect(logSpy).toHaveBeenCalledWith('GET request received a response.')
-
-        logSpy.mockRestore();
-    });
-
-    test('should not log debug messages when debug mode is disabled', async () => {
-        client.setDebug(false)
-        const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
-        mockedAxios.get.mockResolvedValue(responseData)
-
-        await client.get('test-path')
-
-        expect(logSpy).not.toHaveBeenCalled();
-
-        logSpy.mockRestore();
-    });
 })
