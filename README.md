@@ -125,4 +125,4 @@ Recommendation is to carry out development in the supplied `.devcontainer` confi
 - if you tweak generator logic only, re-run `npx tsx scripts/build-service-config.ts` to sync the service metadata/docs without touching the spec
 - when the OpenAPI specification introduces a brand-new domain (prefix the generator does not recognise), add an entry to `serviceDefinitions` in `scripts/build-service-config.ts` and create the corresponding service wrapper before rerunning the generator; updates to existing services are picked up automatically
 - validate locally with `npm run lint` and `npm test`
-- review the resulting diff (generated files plus any service wrappers), then commit and publish
+- review the resulting diff (generated files plus any service wrappers), then commit and publish (tag staging)
