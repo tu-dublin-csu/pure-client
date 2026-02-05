@@ -78,6 +78,7 @@ const serviceDefinitions: ServiceDefinition[] = [
     { name: 'concepts', basePath: '/concepts', prefixes: ['concept'] },
     { name: 'dataSets', basePath: '/data-sets', prefixes: ['dataSet'] },
     { name: 'equipment', basePath: '/equipment', prefixes: ['equipment'] },
+    { name: 'ethicalReviews', basePath: '/ethical-reviews', prefixes: ['ethicalReview'] },
     { name: 'events', basePath: '/events', prefixes: ['event', 'events'] },
     {
         name: 'externalOrganizations',
@@ -97,6 +98,7 @@ const serviceDefinitions: ServiceDefinition[] = [
     },
     { name: 'impacts', basePath: '/impacts', prefixes: ['impact'] },
     { name: 'journals', basePath: '/journals', prefixes: ['journal'] },
+    { name: 'milestones', basePath: '/milestones', prefixes: ['milestone'] },
     { name: 'organizations', basePath: '/organizations', prefixes: ['organization'] },
     { name: 'persons', basePath: '/persons', prefixes: ['person'] },
     { name: 'pressMedia', basePath: '/pressmedia', prefixes: ['pressmedia', 'pressMedia'] },

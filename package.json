@@ -1,6 +1,6 @@
 {
     "name": "pure-client",
-    "version": "0.0.7-beta",
+    "version": "0.0.8-beta",
     "description": "A TypeScript client to interact with the PURE API",
     "main": "./dist/index.cjs",
     "type": "module",

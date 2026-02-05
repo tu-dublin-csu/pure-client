@@ -13000,6 +13000,964 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/awards/{uuid}/milestones": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get milestones for the award
+         * @description Get milestones for the award with the specified UUID.
+         */
+        get: operations["award_getMilestones"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lists all ethical reviews
+         * @description Lists all ethical reviews in the Pure instance. If you need to filter the ethical reviews returned, see the POST version which supports additional filtering.
+         */
+        get: operations["ethicalReview_list"];
+        /**
+         * Create ethical review
+         * @description Create ethical review
+         */
+        put: operations["ethicalReview_create"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/allowed-classified-identifier-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed classified identifier types
+         * @description Get a list of allowed classified identifier types that can be used for the 'identifiers.type' attribute of ethical reviews
+         */
+        get: operations["ethicalReview_getAllowedClassifiedIdentifierTypes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/allowed-custom-defined-field-values/{propertyName}/classifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get allowed classifications for the custom-defined field associated with the ethical review
+         * @description Get allowed classifications for the custom-defined field associated with the ethical review.
+         */
+        get: operations["ethicalReview_getAllowedCustomDefinedFieldClassifications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/allowed-description-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed description types
+         * @description Get a list of allowed types for descriptions on ethical reviews
+         */
+        get: operations["ethicalReview_getAllowedDescriptionTypes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/allowed-document-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed document types
+         * @description Get a list of allowed types for documents on ethical reviews
+         */
+        get: operations["ethicalReview_getAllowedDocumentTypes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/allowed-keyword-group-configurations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of keyword group configurations
+         * @description Get a list of allowed keyword group configurations that can be used when submitting keyword groups.
+         */
+        get: operations["ethicalReview_getAllowedKeywordGroupConfigurations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/allowed-keyword-group-configurations/{id}/classifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed classifications for the specified keyword group
+         * @description Get a list of allowed classifications that can be used when submitting a specified keyword group.
+         */
+        get: operations["ethicalReview_getAllowedKeywordGroupConfigurationClassifications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/allowed-link-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed link types
+         * @description Get a list of allowed link types on ethical reviews
+         */
+        get: operations["ethicalReview_getAllowedLinkTypes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/allowed-locales": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed locales in localized strings
+         * @description Get a list of allowed locales that can be used when submitting localized string entities.
+         */
+        get: operations["ethicalReview_getAllowedLocales"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/allowed-persons-roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed person roles
+         * @description Get a list of allowed roles for persons on ethical reviews
+         */
+        get: operations["ethicalReview_getAllowedPersonsRoles"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/allowed-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed ethical review types
+         * @description Get a list of allowed types that can be used for the 'type' attribute of ethical reviews
+         */
+        get: operations["ethicalReview_getAllowedTypes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/allowed-workflow-steps": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed workflow steps
+         * @description Get a list of allowed workflow steps that can be used for the 'workflow' attribute of ethical reviews
+         */
+        get: operations["ethicalReview_getAllowedWorkflowSteps"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/file-uploads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * File upload endpoint
+         * @description Uploads a file for use in ethical reviews
+         */
+        put: operations["ethicalReview_fileUploads"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/orderings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lists available orderings
+         * @description Lists all orderings available to the ethical review endpoint. These values can be used by the order parameter.
+         */
+        get: operations["ethicalReview_getOrderings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Query operation for ethical reviews
+         * @description Lists ethical reviews in the Pure instance that matches the provided query, similar to the GET version, instead of using parameters to alter the response, an JSON document is posted with the request. The JSON document contains fields for all the parameters available for the GET version, but also additional filtering options.
+         */
+        post: operations["ethicalReview_query"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get ethical review
+         * @description Get ethical review with specific UUID.
+         */
+        get: operations["ethicalReview_get"];
+        /**
+         * Update ethical review
+         * @description Update ethical review with specific UUID.
+         */
+        put: operations["ethicalReview_update"];
+        post?: never;
+        /**
+         * Delete ethical review
+         * @description Delete ethical review with specific UUID.
+         */
+        delete: operations["ethicalReview_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/{uuid}/actions/lock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Lock the content
+         * @description Mark the content as external (used when content contains synchronised data). This has no effect on interactions with the content through the API.
+         */
+        post: operations["ethicalReview_lock"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/{uuid}/actions/unlock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Unlock the content
+         * @description Remove the external mark on the content (used when content contains synchronised data). This has no effect on interactions with the content through the API.
+         */
+        post: operations["ethicalReview_unlock"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/{uuid}/dependents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lists all dependents to an ethical review
+         * @description Lists all dependents to an ethical review with the specified UUID. If the user does not have access to view all the dependent content, an authorization error will be thrown.
+         */
+        get: operations["ethicalReview_dependents"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/{uuid}/files/{fileId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get file from the ethical review
+         * @description Get file from the ethical review
+         */
+        get: operations["ethicalReview_getFile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/{uuid}/milestones": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get milestones for the ethical review
+         * @description Get milestones for the ethical review with the specified UUID.
+         */
+        get: operations["ethicalReview_getMilestones"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ethical-reviews/{uuid}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lists notes
+         * @description Lists notes associated with an ethical review ordered by date (nulls last)
+         */
+        get: operations["ethicalReview_listNotes"];
+        /**
+         * Create note
+         * @description Create note and associate it with an ethical review
+         */
+        put: operations["ethicalReview_createNote"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lists all milestones
+         * @description Lists all milestones in the Pure instance. If you need to filter the milestones returned, see the POST version which supports additional filtering.
+         */
+        get: operations["milestone_list"];
+        /**
+         * Create milestone
+         * @description Create milestone
+         */
+        put: operations["milestone_create"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/allowed-categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed categories
+         * @description Get a list of allowed categories for milestones
+         */
+        get: operations["milestone_getAllowedCategories"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/allowed-completion-states": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed completion states
+         * @description Get a list of allowed completion states for milestones
+         */
+        get: operations["milestone_getAllowedCompletionStates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/allowed-document-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed document types
+         * @description Get a list of allowed types for documents on milestones
+         */
+        get: operations["milestone_getAllowedDocumentTypes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/allowed-locales": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed locales in localized strings
+         * @description Get a list of allowed locales that can be used when submitting localized string entities.
+         */
+        get: operations["milestone_getAllowedLocales"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/allowed-milestone-states": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed milestone states
+         * @description Get a list of allowed milestone states for milestones
+         */
+        get: operations["milestone_getAllowedMilestoneStates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/application/allowed-academic-roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed academic roles related to applications
+         */
+        get: operations["milestone_getAllowedAcademicRolesRelatedToApplications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/application/allowed-administrative-roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed administrative roles related to applications
+         */
+        get: operations["milestone_getAllowedAdministrativeRolesRelatedToApplications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/award/allowed-academic-roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed academic roles related to awards
+         */
+        get: operations["milestone_getAllowedAcademicRolesRelatedToAwards"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/award/allowed-administrative-roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed administrative roles related to awards
+         */
+        get: operations["milestone_getAllowedAdministrativeRolesRelatedToAwards"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/contract/allowed-academic-roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed academic roles related to contracts
+         */
+        get: operations["milestone_getAllowedAcademicRolesRelatedToContract"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/contract/allowed-administrative-roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed administrative roles related to contracts
+         */
+        get: operations["milestone_getAllowedAdministrativeRolesRelatedToContract"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/ethical-review/allowed-academic-roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed academic roles related to ethical reviews
+         */
+        get: operations["milestone_getAllowedAcademicRolesRelatedToEthicalReview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/ethical-review/allowed-administrative-roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed administrative roles related to ethical reviews
+         */
+        get: operations["milestone_getAllowedAdministrativeRolesRelatedToEthicalReview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/file-uploads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * File upload endpoint
+         * @description Uploads a file for use in milestones
+         */
+        put: operations["milestone_fileUploads"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/orderings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lists available orderings
+         * @description Lists all orderings available to the milestone endpoint. These values can be used by the order parameter.
+         */
+        get: operations["milestone_getOrderings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/project/allowed-academic-roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed academic roles related to projects
+         */
+        get: operations["milestone_getAllowedAcademicRolesRelatedToProjects"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/project/allowed-administrative-roles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A list of allowed administrative roles related to projects
+         */
+        get: operations["milestone_getAllowedAdministrativeRolesRelatedToProject"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Query operation for milestones
+         * @description Lists milestones in the Pure instance that matches the provided query, similar to the GET version, instead of using parameters to alter the response, an JSON document is posted with the request. The JSON document contains fields for all the parameters available for the GET version, but also additional filtering options.
+         */
+        post: operations["milestone_query"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/{uuid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get milestone
+         * @description Get milestone with specific UUID.
+         */
+        get: operations["milestone_get"];
+        /**
+         * Update milestone
+         * @description Update milestone with specific UUID.
+         */
+        put: operations["milestone_update"];
+        post?: never;
+        /**
+         * Delete milestone
+         * @description Delete milestone with specific UUID.
+         */
+        delete: operations["milestone_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/{uuid}/actions/lock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Lock the content
+         * @description Mark the content as external (used when content contains synchronised data). This has no effect on interactions with the content through the API.
+         */
+        post: operations["milestone_lock"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/{uuid}/actions/unlock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Unlock the content
+         * @description Remove the external mark on the content (used when content contains synchronised data). This has no effect on interactions with the content through the API.
+         */
+        post: operations["milestone_unlock"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/{uuid}/dependents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lists all dependents to a milestone
+         * @description Lists all dependents to a milestone with the specified UUID. If the user does not have access to view all the dependent content, an authorization error will be thrown.
+         */
+        get: operations["milestone_dependents"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/milestones/{uuid}/files/{fileId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get file from the milestone
+         * @description Get file from the milestone
+         */
+        get: operations["milestone_getFile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -19921,6 +20879,323 @@ export interface components {
              * @description The year of the yearly budget.
              */
             year?: number | null;
+        };
+        /** @description An association between an ethical review and a person, which can either be internal or external */
+        AbstractClassifiedEthicalReviewPersonAssociation: {
+            /**
+             * Format: int64
+             * @description Pure database ID of the object, prefer using the UUID if it is present on the entity
+             */
+            readonly pureId?: number;
+            /** @description A collection of external organization affiliations. */
+            externalOrganizations?: components["schemas"]["ExternalOrganizationRef"][] | null;
+            name?: components["schemas"]["Name"];
+            role: components["schemas"]["ClassificationRef"];
+            typeDiscriminator: string;
+        };
+        /** @description An external association with the ethical review. */
+        ExternalClassifiedEthicalReviewPersonAssociation: Omit<WithRequired<components["schemas"]["AbstractClassifiedEthicalReviewPersonAssociation"], "role">, "typeDiscriminator"> & {
+            externalPerson: components["schemas"]["ExternalPersonRef"];
+        } & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            typeDiscriminator: "ExternalClassifiedEthicalReviewPersonAssociation";
+        };
+        /** @description An internal association with the ethical review. */
+        InternalClassifiedEthicalReviewPersonAssociation: Omit<WithRequired<components["schemas"]["AbstractClassifiedEthicalReviewPersonAssociation"], "role">, "typeDiscriminator"> & {
+            person: components["schemas"]["PersonRef"];
+            /** @description A collection of organizational unit affiliations. */
+            organizations?: components["schemas"]["OrganizationRef"][] | null;
+        } & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            typeDiscriminator: "InternalClassifiedEthicalReviewPersonAssociation";
+        };
+        /** @description An association with an application */
+        EthicalReviewApplicationAssociation: {
+            application: components["schemas"]["ApplicationRef"];
+        };
+        /** @description An association with an award */
+        EthicalReviewAwardAssociation: {
+            award: components["schemas"]["AwardRef"];
+        };
+        /** @description An ethical review document. */
+        EthicalReviewDocument: {
+            /**
+             * Format: int64
+             * @description Pure database ID of the object, prefer using the UUID if it is present on the entity
+             */
+            readonly pureId?: number;
+            /** @description The id of the file */
+            readonly fileId?: string;
+            /** @description The documents file name */
+            fileName: string;
+            /** @description The documents mime type */
+            mimeType: string;
+            /**
+             * Format: int64
+             * @description The documents size in bytes
+             */
+            size?: number;
+            /** @description Download url for the binary file */
+            readonly url?: string;
+            /** @description Locations of the binary file in file stores. */
+            readonly fileStoreLocations?: Record<string, string>;
+            uploadedFile?: components["schemas"]["UploadedFile"];
+            remoteFile?: components["schemas"]["RemoteFile"];
+            /** @description Base64 encoded file data for new files. This property can be used instead of uploadedFile for small files */
+            fileData?: string;
+            /** @description Document title */
+            title?: string | null;
+            type: components["schemas"]["ClassificationRef"];
+            visibility: components["schemas"]["Visibility"];
+            /** @description The user that created the document */
+            readonly creator?: string;
+            /**
+             * Format: date-time
+             * @description Create date for the document
+             */
+            readonly created?: string;
+        };
+        /** @description An ethical review */
+        EthicalReview: {
+            /**
+             * Format: int64
+             * @description Pure database ID of the object, prefer using the UUID if it is present on the entity
+             */
+            readonly pureId?: number;
+            /**
+             * Format: uuid
+             * @description UUID, this is the primary identity of the entity
+             */
+            readonly uuid?: string;
+            /** @description Username of creator */
+            readonly createdBy?: string;
+            /**
+             * Format: date-time
+             * @description Date and time of creation
+             */
+            readonly createdDate?: string;
+            /** @description Username of the user that performed a modification */
+            readonly modifiedBy?: string;
+            /**
+             * Format: date-time
+             * @description Date and time of last modification
+             */
+            readonly modifiedDate?: string;
+            /** @description URL of the content on the Pure Portal */
+            readonly portalUrl?: string;
+            /** @description All pretty URLs */
+            readonly prettyUrlIdentifiers?: string[];
+            /** @description UUIDs of other content items which have been merged into this content item (or similar) */
+            readonly previousUuids?: string[];
+            /** @description Used to guard against conflicting updates. */
+            version?: string | null;
+            title: components["schemas"]["LocalizedString"];
+            applications?: components["schemas"]["EthicalReviewApplicationAssociation"][];
+            awards?: components["schemas"]["EthicalReviewAwardAssociation"][];
+            /** @description A collection of persons. */
+            persons: components["schemas"]["AbstractClassifiedEthicalReviewPersonAssociation"][];
+            /** @description A collection of documents related to the ethical review. */
+            documents?: components["schemas"]["EthicalReviewDocument"][] | null;
+            /** @description The reply to the ethical review, either approved or declined. */
+            ethicalReviewReply?: "PENDING" | "APPROVED" | "DECLINED" | "EXTENDED" | "WITHDRAWN" | "EXPIRED";
+            managingOrganization: components["schemas"]["OrganizationRef"];
+            /** @description A collection of organization associations. */
+            organizations: components["schemas"]["OrganizationRef"][];
+            /** @description A collection of external organization affiliations. */
+            externalOrganizations?: components["schemas"]["ExternalOrganizationRef"][] | null;
+            visibility: components["schemas"]["Visibility"];
+            /** @description Identifiers related to the ethical review. */
+            identifiers?: components["schemas"]["Identifier"][] | null;
+            /** @description Additional links associated with this activity. */
+            links?: components["schemas"]["Link"][] | null;
+            /** @description A collection of descriptions for the project. */
+            descriptions?: components["schemas"]["ClassifiedLocalizedValue"][] | null;
+            customDefinedFields?: components["schemas"]["CustomDefinedFields"];
+            type: components["schemas"]["ClassificationRef"];
+            /** @description Groups of keywords associated with the ethical review. */
+            keywordGroups?: components["schemas"]["KeywordGroup"][] | null;
+            workflow?: components["schemas"]["Workflow"];
+            /** @description The content system name */
+            readonly systemName?: string;
+        };
+        /** @description List of ethical reviews. Can contain a subset of all items along with the full count */
+        EthicalReviewListResult: {
+            /**
+             * Format: int32
+             * @description The full count, ignoring paging
+             */
+            count?: number;
+            pageInformation?: components["schemas"]["PageInformation"];
+            /** @description EthicalReview */
+            items?: components["schemas"]["EthicalReview"][];
+        };
+        /** @description Create a query for ethical review */
+        EthicalReviewQuery: {
+            uuids?: string[];
+            /** Format: int32 */
+            size?: number;
+            /** Format: int32 */
+            offset?: number;
+            orderings?: string[];
+            /** @description String used to perform search */
+            searchString?: string;
+            orderBy?: string;
+        };
+        /** @description A milestone. */
+        Milestone: {
+            /**
+             * Format: int64
+             * @description Pure database ID of the object, prefer using the UUID if it is present on the entity
+             */
+            readonly pureId?: number;
+            /**
+             * Format: uuid
+             * @description UUID, this is the primary identity of the entity
+             */
+            readonly uuid?: string;
+            /** @description Username of creator */
+            readonly createdBy?: string;
+            /**
+             * Format: date-time
+             * @description Date and time of creation
+             */
+            readonly createdDate?: string;
+            /** @description Username of the user that performed a modification */
+            readonly modifiedBy?: string;
+            /**
+             * Format: date-time
+             * @description Date and time of last modification
+             */
+            readonly modifiedDate?: string;
+            /** @description URL of the content on the Pure Portal */
+            readonly portalUrl?: string;
+            /** @description All pretty URLs */
+            readonly prettyUrlIdentifiers?: string[];
+            /** @description UUIDs of other content items which have been merged into this content item (or similar) */
+            readonly previousUuids?: string[];
+            /** @description Used to guard against conflicting updates. */
+            version?: string | null;
+            /**
+             * Format: date
+             * @description The deadline date of the milestone.
+             */
+            deadline?: string | null;
+            completionState?: components["schemas"]["ClassificationRef"];
+            /**
+             * Format: date
+             * @description The date when the milestone was completed. This can only be set when 'completionState' property value is 'completed'
+             */
+            completedDate?: string | null;
+            award?: components["schemas"]["AwardRef"];
+            application?: components["schemas"]["ApplicationRef"];
+            project?: components["schemas"]["ProjectRef"];
+            ethicalReview?: components["schemas"]["EthicalReviewRef"];
+            contract?: components["schemas"]["ContractRef"];
+            completedBy?: components["schemas"]["UserRef"];
+            title: components["schemas"]["LocalizedString"];
+            /** @description List of reminders */
+            reminders?: components["schemas"]["MilestoneReminder"][];
+            /** @description The user role for the milestone for administrative milestones */
+            administrativeRole?: string | null;
+            academicRole?: components["schemas"]["ClassificationRef"];
+            description?: components["schemas"]["FormattedLocalizedString"];
+            category?: components["schemas"]["ClassificationRef"];
+            /** @description Selected milestone type. */
+            milestoneType: "ACADEMIC" | "ADMINISTRATIVE";
+            /** @description A collection of documents related to the milestone. */
+            documents?: components["schemas"]["MilestoneDocument"][] | null;
+            /** @description The specific users chosen to be responsible for the content. */
+            responsibleUsers?: components["schemas"]["UserRef"][];
+            /** @description Identifiers related to the milestone. */
+            identifiers?: components["schemas"]["Identifier"][] | null;
+            /** @description The content system name */
+            readonly systemName?: string;
+        };
+        /** @description A milestone document */
+        MilestoneDocument: {
+            /**
+             * Format: int64
+             * @description Pure database ID of the object, prefer using the UUID if it is present on the entity
+             */
+            readonly pureId?: number;
+            /** @description The id of the file */
+            readonly fileId?: string;
+            /** @description The documents file name */
+            fileName: string;
+            /** @description The documents mime type */
+            mimeType: string;
+            /**
+             * Format: int64
+             * @description The documents size in bytes
+             */
+            size?: number;
+            /** @description Download url for the binary file */
+            readonly url?: string;
+            /** @description Locations of the binary file in file stores. */
+            readonly fileStoreLocations?: Record<string, string>;
+            uploadedFile?: components["schemas"]["UploadedFile"];
+            remoteFile?: components["schemas"]["RemoteFile"];
+            /** @description Base64 encoded file data for new files. This property can be used instead of uploadedFile for small files */
+            fileData?: string;
+            /** @description Document title */
+            title?: string | null;
+            type: components["schemas"]["ClassificationRef"];
+            visibility: components["schemas"]["Visibility"];
+            /** @description The user that created the document */
+            readonly creator?: string;
+            /**
+             * Format: date-time
+             * @description Create date for the document
+             */
+            readonly created?: string;
+        };
+        /** @description List of milestones. Can contain a subset of all items along with the full count */
+        MilestoneListResult: {
+            /**
+             * Format: int32
+             * @description The full count, ignoring paging
+             */
+            count?: number;
+            pageInformation?: components["schemas"]["PageInformation"];
+            /** @description Milestones */
+            items?: components["schemas"]["Milestone"][];
+        };
+        /** @description Create a query for milestone */
+        MilestoneQuery: {
+            uuids?: string[];
+            /** Format: int32 */
+            size?: number;
+            /** Format: int32 */
+            offset?: number;
+            orderings?: string[];
+            /** @description String used to perform search */
+            searchString?: string;
+            /** @description The related content system name to perform search */
+            relatedContentSystemName?: string;
+            /** @description The related content uuid to perform search */
+            relatedContentUuid?: string;
+            orderBy?: string;
+        };
+        /** @description A milestone reminder. */
+        MilestoneReminder: {
+            /**
+             * Format: int64
+             * @description Pure database ID of the object, prefer using the UUID if it is present on the entity
+             */
+            readonly pureId?: number;
+            /**
+             * Format: int32
+             * @description Number of units in reminder period.
+             */
+            value: number;
+            /** @description The time unit of the reminder. */
+            timeUnit: "MONTH" | "WEEK" | "DAY";
         };
     };
     responses: never;
@@ -40454,6 +41729,1439 @@ export interface operations {
                 };
                 content: {
                     "application/problem+json": components["schemas"]["ConflictProblemDetails"];
+                };
+            };
+        };
+    };
+    award_getMilestones: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UUID of the award */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MilestoneListResult"];
+                };
+            };
+        };
+    };
+    ethicalReview_list: {
+        parameters: {
+            query?: {
+                /** @description Number of returned ethical reviews per request. */
+                size?: number;
+                /** @description The offset for the returned list. 0 or null value is from the start */
+                offset?: number;
+                /** @description The order of the list, must be a value from ethicalReview_getOrderings */
+                order?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EthicalReviewListResult"];
+                };
+            };
+        };
+    };
+    ethicalReview_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The content to create */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EthicalReview"];
+            };
+        };
+        responses: {
+            /** @description Successful operation */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EthicalReview"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ethicalReview_getAllowedClassifiedIdentifierTypes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassificationRefList"];
+                };
+            };
+        };
+    };
+    ethicalReview_getAllowedCustomDefinedFieldClassifications: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The custom-defined field property name */
+                propertyName: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassificationRefList"];
+                };
+            };
+        };
+    };
+    ethicalReview_getAllowedDescriptionTypes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassificationRefList"];
+                };
+            };
+        };
+    };
+    ethicalReview_getAllowedDocumentTypes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassificationRefList"];
+                };
+            };
+        };
+    };
+    ethicalReview_getAllowedKeywordGroupConfigurations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AllowedKeywordGroupConfigurationList"];
+                };
+            };
+        };
+    };
+    ethicalReview_getAllowedKeywordGroupConfigurationClassifications: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID of the keyword group configuration */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassificationRefList"];
+                };
+            };
+        };
+    };
+    ethicalReview_getAllowedLinkTypes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassificationRefList"];
+                };
+            };
+        };
+    };
+    ethicalReview_getAllowedLocales: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LocalesList"];
+                };
+            };
+        };
+    };
+    ethicalReview_getAllowedPersonsRoles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassificationRefList"];
+                };
+            };
+        };
+    };
+    ethicalReview_getAllowedTypes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassificationRefList"];
+                };
+            };
+        };
+    };
+    ethicalReview_getAllowedWorkflowSteps: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowListResult"];
+                };
+            };
+        };
+    };
+    ethicalReview_fileUploads: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Set the mime type for the file */
+                "Content-Type"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "*/*": string;
+            };
+        };
+        responses: {
+            /** @description default response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadedFile"];
+                    "application/xml": components["schemas"]["UploadedFile"];
+                };
+            };
+        };
+    };
+    ethicalReview_getOrderings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderingsList"];
+                };
+            };
+        };
+    };
+    ethicalReview_query: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The query to perform */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EthicalReviewQuery"];
+            };
+        };
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EthicalReviewListResult"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ethicalReview_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UUID of the ethical review */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EthicalReview"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ethicalReview_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UUID of the ethical review */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        /** @description The content to update */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EthicalReview"];
+            };
+        };
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EthicalReview"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Version conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ConflictProblemDetails"];
+                };
+            };
+        };
+    };
+    ethicalReview_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UUID of the ethical review */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ConflictProblemDetails"];
+                };
+            };
+        };
+    };
+    ethicalReview_lock: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UUID of the content to lock */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Content marked as locked */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ConflictProblemDetails"];
+                };
+            };
+        };
+    };
+    ethicalReview_unlock: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UUID of the content to unlock */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Content marked as unlocked */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ConflictProblemDetails"];
+                };
+            };
+        };
+    };
+    ethicalReview_dependents: {
+        parameters: {
+            query?: {
+                /** @description Default: false. Setting this to true will add links and names to the output but will also have an impact on performance. Use with caution. */
+                verbose?: boolean;
+            };
+            header?: never;
+            path: {
+                /** @description UUID of the ethical review */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContentRefListResult"];
+                };
+            };
+        };
+    };
+    ethicalReview_getFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UUID of the ethical review */
+                uuid: string;
+                /** @description File id */
+                fileId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+        };
+    };
+    ethicalReview_getMilestones: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UUID of the ethical review */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MilestoneListResult"];
+                };
+            };
+        };
+    };
+    ethicalReview_listNotes: {
+        parameters: {
+            query?: {
+                /** @description Number of returned notes per request */
+                size?: number;
+                /** @description The offset for the returned list. 0 or null value is from the start */
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                /** @description UUID of the ethical review to get notes for */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NoteListResult"];
+                };
+            };
+        };
+    };
+    ethicalReview_createNote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UUID of the ethical review to add note to */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        /** @description The note to create */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Note"];
+            };
+        };
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Note"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    milestone_list: {
+        parameters: {
+            query?: {
+                /** @description Number of returned milestones per request. */
+                size?: number;
+                /** @description The offset for the returned list. 0 or null value is from the start */
+                offset?: number;
+                /** @description The order of the list, must be a value from milestone_getOrderings */
+                order?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MilestoneListResult"];
+                };
+            };
+        };
+    };
+    milestone_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The content to create */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Milestone"];
+            };
+        };
+        responses: {
+            /** @description Successful operation */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Milestone"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    milestone_getAllowedCategories: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassificationRefList"];
+                };
+            };
+        };
+    };
+    milestone_getAllowedCompletionStates: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassificationRefList"];
+                };
+            };
+        };
+    };
+    milestone_getAllowedDocumentTypes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassificationRefList"];
+                };
+            };
+        };
+    };
+    milestone_getAllowedLocales: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LocalesList"];
+                };
+            };
+        };
+    };
+    milestone_getAllowedMilestoneStates: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassificationRefList"];
+                };
+            };
+        };
+    };
+    milestone_getAllowedAcademicRolesRelatedToApplications: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassificationRefList"];
+                };
+            };
+        };
+    };
+    milestone_getAllowedAdministrativeRolesRelatedToApplications: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["APIStringListResult"];
+                };
+            };
+        };
+    };
+    milestone_getAllowedAcademicRolesRelatedToAwards: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassificationRefList"];
+                };
+            };
+        };
+    };
+    milestone_getAllowedAdministrativeRolesRelatedToAwards: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["APIStringListResult"];
+                };
+            };
+        };
+    };
+    milestone_getAllowedAcademicRolesRelatedToContract: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassificationRefList"];
+                };
+            };
+        };
+    };
+    milestone_getAllowedAdministrativeRolesRelatedToContract: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["APIStringListResult"];
+                };
+            };
+        };
+    };
+    milestone_getAllowedAcademicRolesRelatedToEthicalReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassificationRefList"];
+                };
+            };
+        };
+    };
+    milestone_getAllowedAdministrativeRolesRelatedToEthicalReview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["APIStringListResult"];
+                };
+            };
+        };
+    };
+    milestone_fileUploads: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Set the mime type for the file */
+                "Content-Type"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "*/*": string;
+            };
+        };
+        responses: {
+            /** @description default response */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadedFile"];
+                    "application/xml": components["schemas"]["UploadedFile"];
+                };
+            };
+        };
+    };
+    milestone_getOrderings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderingsList"];
+                };
+            };
+        };
+    };
+    milestone_getAllowedAcademicRolesRelatedToProjects: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassificationRefList"];
+                };
+            };
+        };
+    };
+    milestone_getAllowedAdministrativeRolesRelatedToProject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["APIStringListResult"];
+                };
+            };
+        };
+    };
+    milestone_query: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description The query to perform */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MilestoneQuery"];
+            };
+        };
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MilestoneListResult"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    milestone_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UUID of the milestone */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Milestone"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    milestone_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UUID of the milestone */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        /** @description The content to update */
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Milestone"];
+            };
+        };
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Milestone"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Version conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ConflictProblemDetails"];
+                };
+            };
+        };
+    };
+    milestone_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UUID of the milestone */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ConflictProblemDetails"];
+                };
+            };
+        };
+    };
+    milestone_lock: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UUID of the content to lock */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Content marked as locked */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ConflictProblemDetails"];
+                };
+            };
+        };
+    };
+    milestone_unlock: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UUID of the content to unlock */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Content marked as unlocked */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ConflictProblemDetails"];
+                };
+            };
+        };
+    };
+    milestone_dependents: {
+        parameters: {
+            query?: {
+                /** @description Default: false. Setting this to true will add links and names to the output but will also have an impact on performance. Use with caution. */
+                verbose?: boolean;
+            };
+            header?: never;
+            path: {
+                /** @description UUID of the milestone */
+                uuid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContentRefListResult"];
+                };
+            };
+        };
+    };
+    milestone_getFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description UUID of the milestone */
+                uuid: string;
+                /** @description File id */
+                fileId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful operation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
                 };
             };
         };
