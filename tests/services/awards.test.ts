@@ -14,6 +14,7 @@ import {
     type AwardBudget,
     type AwardBudgetResult,
     type AwardCluster,
+    type MilestoneListResult,
     type DisciplinesAssociation,
     type DisciplinesDisciplineListResult,
     type DisciplinesDisciplineSchemeListResult,
@@ -130,6 +131,16 @@ describe('AwardsService', () => {
 
         expect(await service.getCluster(uuid)).toBe(cluster)
         expect(client.get).toHaveBeenNthCalledWith(3, `${basePath}/${uuid}/cluster`, undefined, undefined)
+    })
+
+    it('retrieves milestones for an award', async () => {
+        const uuid = 'award-milestones'
+        const milestones = { items: [] } as unknown as MilestoneListResult
+
+        client.get.mockResolvedValueOnce(milestones)
+
+        expect(await service.getMilestones(uuid)).toBe(milestones)
+        expect(client.get).toHaveBeenCalledWith(`${basePath}/${uuid}/milestones`, undefined, undefined)
     })
 
     it('manages dependents and disciplines', async () => {

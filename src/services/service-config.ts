@@ -785,6 +785,12 @@ export const awardsServiceConfig: ServiceConfig = {
             description: 'Get the award cluster for the award with the specified UUID.',
             path: '/{uuid}/cluster'
         },
+        getMilestones: {
+            operationId: 'award_getMilestones',
+            summary: 'Get milestones for the award',
+            description: 'Get milestones for the award with the specified UUID.',
+            path: '/{uuid}/milestones'
+        },
         getDisciplineAssociation: {
             operationId: 'award_getDisciplineAssociation',
             summary: 'Get disciplines from the discipline scheme associated with the award',
@@ -4528,6 +4534,332 @@ export const usersServiceConfig: ServiceConfig = {
     }
 }
 
+export const ethicalReviewsServiceConfig: ServiceConfig = {
+    basePath: '/ethical-reviews',
+    operations: {
+        create: {
+            operationId: 'ethicalReview_create',
+            summary: 'Create ethical review',
+            description: 'Create ethical review'
+        },
+        createNote: {
+            operationId: 'ethicalReview_createNote',
+            summary: 'Create note',
+            description: 'Create note and associate it with an ethical review',
+            path: '/{uuid}/notes'
+        },
+        get: {
+            operationId: 'ethicalReview_get',
+            summary: 'Get ethical review',
+            description: 'Get ethical review with specific UUID.',
+            path: '/{uuid}'
+        },
+        getAllowedClassifiedIdentifierTypes: {
+            operationId: 'ethicalReview_getAllowedClassifiedIdentifierTypes',
+            summary: 'A list of allowed classified identifier types',
+            description: 'Get a list of allowed classified identifier types that can be used for the \'identifiers.type\' attribute of ethical reviews',
+            path: '/allowed-classified-identifier-types'
+        },
+        getAllowedCustomDefinedFieldClassifications: {
+            operationId: 'ethicalReview_getAllowedCustomDefinedFieldClassifications',
+            summary: 'Get allowed classifications for the custom-defined field associated with the ethical review',
+            description: 'Get allowed classifications for the custom-defined field associated with the ethical review.',
+            path: '/allowed-custom-defined-field-values/{propertyName}/classifications'
+        },
+        getAllowedDescriptionTypes: {
+            operationId: 'ethicalReview_getAllowedDescriptionTypes',
+            summary: 'A list of allowed description types',
+            description: 'Get a list of allowed types for descriptions on ethical reviews',
+            path: '/allowed-description-types'
+        },
+        getAllowedDocumentTypes: {
+            operationId: 'ethicalReview_getAllowedDocumentTypes',
+            summary: 'A list of allowed document types',
+            description: 'Get a list of allowed types for documents on ethical reviews',
+            path: '/allowed-document-types'
+        },
+        getAllowedKeywordGroupConfigurationClassifications: {
+            operationId: 'ethicalReview_getAllowedKeywordGroupConfigurationClassifications',
+            summary: 'A list of allowed classifications for the specified keyword group',
+            description: 'Get a list of allowed classifications that can be used when submitting a specified keyword group.',
+            path: '/allowed-keyword-group-configurations/{id}/classifications'
+        },
+        getAllowedKeywordGroupConfigurations: {
+            operationId: 'ethicalReview_getAllowedKeywordGroupConfigurations',
+            summary: 'A list of keyword group configurations',
+            description: 'Get a list of allowed keyword group configurations that can be used when submitting keyword groups.',
+            path: '/allowed-keyword-group-configurations'
+        },
+        getAllowedLinkTypes: {
+            operationId: 'ethicalReview_getAllowedLinkTypes',
+            summary: 'A list of allowed link types',
+            description: 'Get a list of allowed link types on ethical reviews',
+            path: '/allowed-link-types'
+        },
+        getAllowedLocales: {
+            operationId: 'ethicalReview_getAllowedLocales',
+            summary: 'A list of allowed locales in localized strings',
+            description: 'Get a list of allowed locales that can be used when submitting localized string entities.',
+            path: '/allowed-locales'
+        },
+        getAllowedPersonsRoles: {
+            operationId: 'ethicalReview_getAllowedPersonsRoles',
+            summary: 'A list of allowed person roles',
+            description: 'Get a list of allowed roles for persons on ethical reviews',
+            path: '/allowed-persons-roles'
+        },
+        getAllowedTypes: {
+            operationId: 'ethicalReview_getAllowedTypes',
+            summary: 'A list of allowed ethical review types',
+            description: 'Get a list of allowed types that can be used for the \'type\' attribute of ethical reviews',
+            path: '/allowed-types'
+        },
+        getAllowedWorkflowSteps: {
+            operationId: 'ethicalReview_getAllowedWorkflowSteps',
+            summary: 'A list of allowed workflow steps',
+            description: 'Get a list of allowed workflow steps that can be used for the \'workflow\' attribute of ethical reviews',
+            path: '/allowed-workflow-steps'
+        },
+        getFile: {
+            operationId: 'ethicalReview_getFile',
+            summary: 'Get file from the ethical review',
+            description: 'Get file from the ethical review',
+            path: '/{uuid}/files/{fileId}'
+        },
+        getMilestones: {
+            operationId: 'ethicalReview_getMilestones',
+            summary: 'Get milestones for the ethical review',
+            description: 'Get milestones for the ethical review with the specified UUID.',
+            path: '/{uuid}/milestones'
+        },
+        getOrderings: {
+            operationId: 'ethicalReview_getOrderings',
+            summary: 'Lists available orderings',
+            description: 'Lists all orderings available to the ethical review endpoint. These values can be used by the order parameter.',
+            path: '/orderings'
+        },
+        list: {
+            operationId: 'ethicalReview_list',
+            summary: 'Lists all ethical reviews',
+            description: 'Lists all ethical reviews in the Pure instance. If you need to filter the ethical reviews returned, see the POST version which supports additional filtering.'
+        },
+        listDependents: {
+            operationId: 'ethicalReview_dependents',
+            summary: 'Lists all dependents to an ethical review',
+            description: 'Lists all dependents to an ethical review with the specified UUID. If the user does not have access to view all the dependent content, an authorization error will be thrown.',
+            path: '/{uuid}/dependents'
+        },
+        listNotes: {
+            operationId: 'ethicalReview_listNotes',
+            summary: 'Lists notes',
+            description: 'Lists notes associated with an ethical review ordered by date (nulls last)',
+            path: '/{uuid}/notes'
+        },
+        lock: {
+            operationId: 'ethicalReview_lock',
+            summary: 'Lock the content',
+            description: 'Mark the content as external (used when content contains synchronised data). This has no effect on interactions with the content through the API.',
+            path: '/{uuid}/actions/lock'
+        },
+        query: {
+            operationId: 'ethicalReview_query',
+            summary: 'Query operation for ethical reviews',
+            description: 'Lists ethical reviews in the Pure instance that matches the provided query, similar to the GET version, instead of using parameters to alter the response, an JSON document is posted with the request. The JSON document contains fields for all the parameters available for the GET version, but also additional filtering options.',
+            path: '/search'
+        },
+        remove: {
+            operationId: 'ethicalReview_delete',
+            summary: 'Delete ethical review',
+            description: 'Delete ethical review with specific UUID.',
+            path: '/{uuid}'
+        },
+        unlock: {
+            operationId: 'ethicalReview_unlock',
+            summary: 'Unlock the content',
+            description: 'Remove the external mark on the content (used when content contains synchronised data). This has no effect on interactions with the content through the API.',
+            path: '/{uuid}/actions/unlock'
+        },
+        update: {
+            operationId: 'ethicalReview_update',
+            summary: 'Update ethical review',
+            description: 'Update ethical review with specific UUID.',
+            path: '/{uuid}'
+        },
+        uploadFile: {
+            operationId: 'ethicalReview_fileUploads',
+            summary: 'File upload endpoint',
+            description: 'Uploads a file for use in ethical reviews',
+            path: '/file-uploads'
+        }
+    }
+}
+
+export const milestonesServiceConfig: ServiceConfig = {
+    basePath: '/milestones',
+    operations: {
+        create: {
+            operationId: 'milestone_create',
+            summary: 'Create milestone',
+            description: 'Create milestone'
+        },
+        get: {
+            operationId: 'milestone_get',
+            summary: 'Get milestone',
+            description: 'Get milestone with specific UUID.',
+            path: '/{uuid}'
+        },
+        getAllowedAcademicRolesRelatedToApplications: {
+            operationId: 'milestone_getAllowedAcademicRolesRelatedToApplications',
+            summary: 'A list of allowed academic roles related to applications',
+            description: 'Get a list of allowed academic roles related to applications.',
+            path: '/application/allowed-academic-roles'
+        },
+        getAllowedAdministrativeRolesRelatedToApplications: {
+            operationId: 'milestone_getAllowedAdministrativeRolesRelatedToApplications',
+            summary: 'A list of allowed administrative roles related to applications',
+            description: 'Get a list of allowed administrative roles related to applications.',
+            path: '/application/allowed-administrative-roles'
+        },
+        getAllowedAcademicRolesRelatedToAwards: {
+            operationId: 'milestone_getAllowedAcademicRolesRelatedToAwards',
+            summary: 'A list of allowed academic roles related to awards',
+            description: 'Get a list of allowed academic roles related to awards.',
+            path: '/award/allowed-academic-roles'
+        },
+        getAllowedAdministrativeRolesRelatedToAwards: {
+            operationId: 'milestone_getAllowedAdministrativeRolesRelatedToAwards',
+            summary: 'A list of allowed administrative roles related to awards',
+            description: 'Get a list of allowed administrative roles related to awards.',
+            path: '/award/allowed-administrative-roles'
+        },
+        getAllowedAcademicRolesRelatedToContract: {
+            operationId: 'milestone_getAllowedAcademicRolesRelatedToContract',
+            summary: 'A list of allowed academic roles related to contracts',
+            description: 'Get a list of allowed academic roles related to contracts.',
+            path: '/contract/allowed-academic-roles'
+        },
+        getAllowedAdministrativeRolesRelatedToContract: {
+            operationId: 'milestone_getAllowedAdministrativeRolesRelatedToContract',
+            summary: 'A list of allowed administrative roles related to contracts',
+            description: 'Get a list of allowed administrative roles related to contracts.',
+            path: '/contract/allowed-administrative-roles'
+        },
+        getAllowedAcademicRolesRelatedToEthicalReview: {
+            operationId: 'milestone_getAllowedAcademicRolesRelatedToEthicalReview',
+            summary: 'A list of allowed academic roles related to ethical reviews',
+            description: 'Get a list of allowed academic roles related to ethical reviews.',
+            path: '/ethical-review/allowed-academic-roles'
+        },
+        getAllowedAdministrativeRolesRelatedToEthicalReview: {
+            operationId: 'milestone_getAllowedAdministrativeRolesRelatedToEthicalReview',
+            summary: 'A list of allowed administrative roles related to ethical reviews',
+            description: 'Get a list of allowed administrative roles related to ethical reviews.',
+            path: '/ethical-review/allowed-administrative-roles'
+        },
+        getAllowedAcademicRolesRelatedToProjects: {
+            operationId: 'milestone_getAllowedAcademicRolesRelatedToProjects',
+            summary: 'A list of allowed academic roles related to projects',
+            description: 'Get a list of allowed academic roles related to projects.',
+            path: '/project/allowed-academic-roles'
+        },
+        getAllowedAdministrativeRolesRelatedToProject: {
+            operationId: 'milestone_getAllowedAdministrativeRolesRelatedToProject',
+            summary: 'A list of allowed administrative roles related to projects',
+            description: 'Get a list of allowed administrative roles related to projects.',
+            path: '/project/allowed-administrative-roles'
+        },
+        getAllowedCategories: {
+            operationId: 'milestone_getAllowedCategories',
+            summary: 'A list of allowed categories',
+            description: 'Get a list of allowed categories for milestones',
+            path: '/allowed-categories'
+        },
+        getAllowedCompletionStates: {
+            operationId: 'milestone_getAllowedCompletionStates',
+            summary: 'A list of allowed completion states',
+            description: 'Get a list of allowed completion states for milestones',
+            path: '/allowed-completion-states'
+        },
+        getAllowedDocumentTypes: {
+            operationId: 'milestone_getAllowedDocumentTypes',
+            summary: 'A list of allowed document types',
+            description: 'Get a list of allowed types for documents on milestones',
+            path: '/allowed-document-types'
+        },
+        getAllowedLocales: {
+            operationId: 'milestone_getAllowedLocales',
+            summary: 'A list of allowed locales in localized strings',
+            description: 'Get a list of allowed locales that can be used when submitting localized string entities.',
+            path: '/allowed-locales'
+        },
+        getAllowedMilestoneStates: {
+            operationId: 'milestone_getAllowedMilestoneStates',
+            summary: 'A list of allowed milestone states',
+            description: 'Get a list of allowed milestone states for milestones',
+            path: '/allowed-milestone-states'
+        },
+        getFile: {
+            operationId: 'milestone_getFile',
+            summary: 'Get file from the milestone',
+            description: 'Get file from the milestone',
+            path: '/{uuid}/files/{fileId}'
+        },
+        getOrderings: {
+            operationId: 'milestone_getOrderings',
+            summary: 'Lists available orderings',
+            description: 'Lists all orderings available to the milestone endpoint. These values can be used by the order parameter.',
+            path: '/orderings'
+        },
+        list: {
+            operationId: 'milestone_list',
+            summary: 'Lists all milestones',
+            description: 'Lists all milestones in the Pure instance. If you need to filter the milestones returned, see the POST version which supports additional filtering.'
+        },
+        listDependents: {
+            operationId: 'milestone_dependents',
+            summary: 'Lists all dependents to a milestone',
+            description: 'Lists all dependents to a milestone with the specified UUID. If the user does not have access to view all the dependent content, an authorization error will be thrown.',
+            path: '/{uuid}/dependents'
+        },
+        lock: {
+            operationId: 'milestone_lock',
+            summary: 'Lock the content',
+            description: 'Mark the content as external (used when content contains synchronised data). This has no effect on interactions with the content through the API.',
+            path: '/{uuid}/actions/lock'
+        },
+        query: {
+            operationId: 'milestone_query',
+            summary: 'Query operation for milestones',
+            description: 'Lists milestones in the Pure instance that matches the provided query, similar to the GET version, instead of using parameters to alter the response, an JSON document is posted with the request. The JSON document contains fields for all the parameters available for the GET version, but also additional filtering options.',
+            path: '/search'
+        },
+        remove: {
+            operationId: 'milestone_delete',
+            summary: 'Delete milestone',
+            description: 'Delete milestone with specific UUID.',
+            path: '/{uuid}'
+        },
+        unlock: {
+            operationId: 'milestone_unlock',
+            summary: 'Unlock the content',
+            description: 'Remove the external mark on the content (used when content contains synchronised data). This has no effect on interactions with the content through the API.',
+            path: '/{uuid}/actions/unlock'
+        },
+        update: {
+            operationId: 'milestone_update',
+            summary: 'Update milestone',
+            description: 'Update milestone with specific UUID.',
+            path: '/{uuid}'
+        },
+        uploadFile: {
+            operationId: 'milestone_fileUploads',
+            summary: 'File upload endpoint',
+            description: 'Uploads a file for use in milestones',
+            path: '/file-uploads'
+        }
+    }
+}
+
 export const serviceConfigRegistry = {
     activities: activitiesServiceConfig,
     authorCollaborations: authorCollaborationsServiceConfig,
@@ -4538,11 +4870,13 @@ export const serviceConfigRegistry = {
     dataSets: dataSetsServiceConfig,
     equipment: equipmentServiceConfig,
     events: eventsServiceConfig,
+    ethicalReviews: ethicalReviewsServiceConfig,
     externalOrganizations: externalOrganizationsServiceConfig,
     externalPersons: externalPersonsServiceConfig,
     fundingOpportunities: fundingOpportunitiesServiceConfig,
     impacts: impactsServiceConfig,
     journals: journalsServiceConfig,
+    milestones: milestonesServiceConfig,
     organizations: organizationsServiceConfig,
     persons: personsServiceConfig,
     pressMedia: pressMediaServiceConfig,

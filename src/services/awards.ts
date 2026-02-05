@@ -23,6 +23,7 @@ export type AwardBudgetResult = components['schemas']['AwardBudgetResult']
 export type AwardCluster = components['schemas']['AwardCluster']
 export type OrderingsList = components['schemas']['OrderingsList']
 export type ContentRefListResult = components['schemas']['ContentRefListResult']
+export type MilestoneListResult = components['schemas']['MilestoneListResult']
 export type UploadedFile = components['schemas']['UploadedFile']
 export type WorkflowListResult = components['schemas']['WorkflowListResult']
 export type AwardNotesParams = NonNullable<operations['award_listNotes']['parameters']['query']>
@@ -237,6 +238,21 @@ export class AwardsService {
      */
     async getCluster(uuid: AwardPathParams['uuid'], config?: AxiosRequestConfig): Promise<AwardCluster> {
         return invokeOperation<AwardCluster>(this.client, this.basePath, this.operations.getCluster, {
+            pathParams: { uuid },
+            config
+        })
+    }
+
+    /**
+     * Get milestones for the award
+     *
+     * Get milestones for the award with the specified UUID.
+     *
+     * @param uuid Path parameter "uuid" (string (uuid), pattern .+). UUID of the award
+     * @param config Axios request configuration overrides.
+     */
+    async getMilestones(uuid: AwardPathParams['uuid'], config?: AxiosRequestConfig): Promise<MilestoneListResult> {
+        return invokeOperation<MilestoneListResult>(this.client, this.basePath, this.operations.getMilestones, {
             pathParams: { uuid },
             config
         })

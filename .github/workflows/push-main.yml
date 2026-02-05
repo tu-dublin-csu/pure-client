@@ -44,4 +44,4 @@ jobs:
             - name: Build package
               run: npm run build
             - name: Publish package
-              run: npm publish --access public --tag staging
+              run: npm publish --access public

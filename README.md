@@ -61,11 +61,13 @@ The following service wrappers are generated from the OpenAPI document and expor
 - `DataSetsService`
 - `EquipmentService`
 - `EventsService`
+- `EthicalReviewsService`
 - `ExternalOrganizationsService`
 - `ExternalPersonsService`
 - `FundingOpportunitiesService`
 - `ImpactsService`
 - `JournalsService`
+- `MilestonesService`
 - `OrganizationsService`
 - `PersonsService`
 - `PressMediaService`

@@ -38,6 +38,7 @@ export type {
 	AwardBudget,
 	AwardBudgetResult,
 	AwardCluster,
+	MilestoneListResult as AwardMilestoneListResult,
 	DisciplinesAssociation as AwardDisciplinesAssociation,
 	Note as AwardNote
 } from './services/awards'
@@ -107,6 +108,27 @@ export type {
 	Note as EventNote,
 	NoteListResult as EventNoteListResult
 } from './services/events'
+
+export { EthicalReviewsService } from './services/ethical-reviews'
+export type {
+	EthicalReviewsServiceOptions,
+	EthicalReview,
+	EthicalReviewListParams,
+	EthicalReviewListResult,
+	EthicalReviewQuery,
+	EthicalReviewDependentsParams,
+	EthicalReviewNotesParams,
+	ClassificationRefList as EthicalReviewClassificationRefList,
+	AllowedKeywordGroupConfigurationList as EthicalReviewAllowedKeywordGroupConfigurationList,
+	LocalesList as EthicalReviewLocalesList,
+	WorkflowListResult as EthicalReviewWorkflowListResult,
+	OrderingsList as EthicalReviewOrderingsList,
+	ContentRefListResult as EthicalReviewContentRefListResult,
+	MilestoneListResult as EthicalReviewMilestoneListResult,
+	Note as EthicalReviewNote,
+	NoteListResult as EthicalReviewNoteListResult,
+	UploadedFile as EthicalReviewUploadedFile
+} from './services/ethical-reviews'
 
 export { FundingOpportunitiesService } from './services/funding-opportunities'
 export type {
@@ -178,6 +200,22 @@ export type {
 	Note as JournalNote,
 	NoteListResult as JournalNoteListResult
 } from './services/journals'
+
+export { MilestonesService } from './services/milestones'
+export type {
+	MilestonesServiceOptions,
+	Milestone,
+	MilestoneListParams,
+	MilestoneListResult,
+	MilestoneQuery,
+	MilestoneDependentsParams,
+	ClassificationRefList as MilestoneClassificationRefList,
+	LocalesList as MilestoneLocalesList,
+	OrderingsList as MilestoneOrderingsList,
+	ContentRefListResult as MilestoneContentRefListResult,
+	APIStringListResult as MilestoneAPIStringListResult,
+	UploadedFile as MilestoneUploadedFile
+} from './services/milestones'
 
 export { PressMediaService } from './services/press-media'
 export type {
